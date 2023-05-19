@@ -31,7 +31,7 @@ jobs:
       
         - name: Publish github pages
           run: |
-           git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/vaynavayne/soul.git
+           git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/vaynevayne/soul.git
            npx gh-pages -d build -u "github-actions-bot <support+actions@github.com>"
           env:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
