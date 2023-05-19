@@ -8,12 +8,14 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "release": "turbo run build --filter=docs^... && changeset publish"
+    "release": "turbo run build --filter=docs^... && changeset publish",
+    "deploy:docs":"turbo run deploy:docs --filter docs"
   },
   "devDependencies": {
     "@changesets/cli": "^2.25.2",
     "eslint": "^8.29.0",
     "eslint-config-soul": "workspace:0.0.0",
+    "gh-pages": "^5.0.0",
     "prettier": "^2.8.0",
     "turbo": "latest"
   },

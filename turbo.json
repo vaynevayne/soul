@@ -16,6 +16,9 @@
     },
     "clean": {
       "cache": false
+    },
+    "deploy:docs":{
+      "dependsOn": ["build"]
     }
   }
 }

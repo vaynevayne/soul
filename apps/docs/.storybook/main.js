@@ -11,6 +11,7 @@ module.exports = {
     // customize the Vite config here
     return {
       ...config,
+      base:'/soul/',
       resolve: {
         alias: [
           {
