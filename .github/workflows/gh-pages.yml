@@ -29,6 +29,13 @@ jobs:
         - run: pnpm install
         - run: pnpm run build
       
+        - name: Publish github pages
+          run: |
+           git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+           npx gh-pages -d build -u "github-actions-bot <support+actions@github.com>"
+          env:
+           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
       # 文档编译命令，如果是 react 模板需要修改为 npm run docs:build
         - run: pnpm run deploy
         - name: Deploy
