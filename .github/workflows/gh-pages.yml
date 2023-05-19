@@ -31,8 +31,8 @@ jobs:
       
         - name: Publish github pages
           run: |
-           git config user.name vaynevayne
-           git config user.email 740652572@qq.com 
+           git config user.name "vaynevayne"
+           git config user.email "740652572@qq.com"
           env:
            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     
