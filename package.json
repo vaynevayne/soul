@@ -9,7 +9,7 @@
     "changeset": "changeset",
     "version-packages": "changeset version",
     "release": "turbo run build --filter=docs^... && changeset publish",
-    "deploy:docs":"turbo run deploy:docs --filter docs"
+    "deploy":"turbo run deploy --filter docs"
   },
   "devDependencies": {
     "@changesets/cli": "^2.25.2",
