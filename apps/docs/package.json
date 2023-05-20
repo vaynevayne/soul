@@ -3,11 +3,11 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "start-storybook -p 6006",
-    "build": "build-storybook --docs",
+    "dev": "storybook dev -p 6006",
+    "build": "storybook build",
     "preview-storybook": "serve storybook-static",
     "clean": "rm -rf .turbo && rm -rf node_modules",
-    "deploy": "gh-pages -d storybook-static"
+    "deploy": "gh-pages -d storybook-static",
   },
   "dependencies": {
     "@soul/core": "workspace:0.0.0",
@@ -16,16 +16,20 @@
   },
   "devDependencies": {
     "@soul/tsconfig": "workspace:0.0.0",
-    "@storybook/addon-actions": "^6.5.14",
-    "@storybook/addon-docs": "^6.5.14",
-    "@storybook/addon-essentials": "^6.5.14",
-    "@storybook/addon-links": "^6.5.14",
-    "@storybook/builder-vite": "^0.1.41",
-    "@storybook/react": "^6.5.14",
+    "@storybook/addon-essentials": "^7.0.12",
+    "@storybook/addon-interactions": "^7.0.12",
+    "@storybook/addon-links": "^7.0.12",
+    "@storybook/blocks": "^7.0.12",
+    "@storybook/react": "^7.0.12",
+    "@storybook/react-vite": "^7.0.12",
+    "@storybook/testing-library": "^0.0.14-next.2",
     "@vitejs/plugin-react": "^1.3.2",
     "eslint-config-soul": "workspace:0.0.0",
+    "eslint-plugin-storybook": "^0.6.12",
+    "prop-types": "^15.8.1",
     "serve": "^13.0.4",
+    "storybook": "^7.0.12",
     "typescript": "^4.9.3",
-    "vite": "^2.9.15"
+    "vite": "^4.3.8"
   }
 }

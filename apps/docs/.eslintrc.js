@@ -1,4 +1,4 @@
 module.exports = {
   root: true,
-  extends: ["soul"],
+  extends: ["soul", "plugin:storybook/recommended"]
 };
