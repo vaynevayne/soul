@@ -132,9 +132,6 @@ importers:
       eslint-config-soul:
         specifier: workspace:*
         version: link:../eslint-config-soul
-      exceljs:
-        specifier: ^4.3.0
-        version: 4.3.0
       immer:
         specifier: ^10.0.2
         version: 10.0.2
@@ -176,6 +173,9 @@ importers:
       eslint-config-soul:
         specifier: workspace:*
         version: link:../eslint-config-soul
+      exceljs:
+        specifier: ^4.3.0
+        version: 4.3.0
       react:
         specifier: ^18.1.0
         version: 18.2.0

@@ -1,3 +1,4 @@
+import * as Excel from 'exceljs';
 import { get, isEmpty } from 'lodash-es';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 
@@ -133,7 +134,7 @@ async function asyncExportTableData(tableColumns, tableData, fileName) {
   if (isEmpty(tableData)) {
     return;
   }
-  const { default: Excel } = await import('exceljs');
+
 
   exportExcel(Excel, tableColumns, tableData, tableData, fileName);
 }
