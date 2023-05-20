@@ -7,7 +7,7 @@
     "build": "storybook build",
     "preview-storybook": "serve storybook-static",
     "clean": "rm -rf .turbo && rm -rf node_modules",
-    "deploy": "gh-pages -d storybook-static",
+    "deploy": "gh-pages -d storybook-static"
   },
   "dependencies": {
     "@soul/core": "workspace:0.0.0",

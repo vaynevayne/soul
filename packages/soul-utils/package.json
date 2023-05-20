@@ -28,7 +28,6 @@
     "access": "public"
   },
   "tsup": {
-    "sourcemap": true,
-    "clean": true
+    "sourcemap": true
   }
 }

@@ -31,6 +31,9 @@ const config: StorybookConfig = {
           },
         ],
       },
+      define: {
+        "process.env": {},
+      },
     };
   },
 };
