@@ -1,6 +1,6 @@
-import { TableColumnType } from 'antd';
-import { Dispatch, Key, ReactNode, SetStateAction } from 'react';
-import { ItemParams } from 'react-contexify';
+import { TableColumnType } from "antd";
+import { Dispatch, Key, ReactNode, SetStateAction } from "react";
+import { ItemParams } from "react-contexify";
 
 export type ColumnState = {
   order?: number;
@@ -55,6 +55,9 @@ export type Meta = {
     checked: boolean,
     setLocalColumns: Dispatch<SetStateAction<any>>,
     index: number,
-    column: ColumnWithState,
+    column: ColumnWithState
   ): void;
 };
+
+export type SoulTableColumn<RecordType = unknown> =
+  TableColumnType<RecordType> & ColumnState;
