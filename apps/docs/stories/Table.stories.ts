@@ -1,6 +1,6 @@
-import { SoulTable } from "@soul/core";
-import type { Meta, StoryObj } from "@storybook/react";
-import { columns, dataSource } from "./mockData";
+import {SoulTable} from "@soul/core"
+import type {Meta, StoryObj} from "@storybook/react"
+import {columns, dataSource} from "./mockData"
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction
 const meta = {
   title: "Example/Table",
@@ -9,10 +9,10 @@ const meta = {
   // argTypes: {
   //   backgroundColor: { control: 'color' },
   // },
-} satisfies Meta<typeof SoulTable>;
+} satisfies Meta<typeof SoulTable>
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
 export const Uncontrolled: Story = {
@@ -20,14 +20,14 @@ export const Uncontrolled: Story = {
     dataSource,
     columns,
     rowKey: "id",
-    defaultColumnsStateChange: {
+    defaultColumnsState: {
       name: {
         order: 1,
       },
     },
     onColumnsStateChange: console.log,
   },
-};
+}
 
 export const Controlled: Story = {
   args: {
@@ -35,9 +35,8 @@ export const Controlled: Story = {
 
     dataSource,
     columns,
-    label: "Button",
   },
-};
+}
 
 export const RowReorder: Story = {
   args: {
@@ -46,9 +45,8 @@ export const RowReorder: Story = {
     dataSource,
     columns,
     size: "large",
-    label: "Button",
   },
-};
+}
 
 export const CustomVisibleModal: Story = {
   args: {
@@ -57,6 +55,5 @@ export const CustomVisibleModal: Story = {
     dataSource,
     columns,
     size: "small",
-    label: "Button",
   },
-};
+}

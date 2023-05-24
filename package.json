@@ -1,5 +1,10 @@
 {
   "private": true,
+  "homepage": "https://vaynevayne.github.io/soul/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vaynevayne/soul"
+  },
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev --no-cache --continue",

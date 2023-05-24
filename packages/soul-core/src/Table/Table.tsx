@@ -1,4 +1,4 @@
-import { useUncontrolled, useWatch } from "@soul/utils";
+import {useUncontrolled, useWatch} from "@soul/utils"
 import {
   TableProps as AntTableProps,
   Button,
@@ -7,119 +7,132 @@ import {
   Space,
   Table,
   TableColumnType,
-} from "antd";
-import { arrayMoveImmutable } from "array-move";
-import { produce } from "immer";
+  TableColumnsType,
+  Tooltip,
+} from "antd"
+import {arrayMoveImmutable} from "array-move"
+import {produce} from "immer"
 import {
-  Dispatch,
-  FC,
+  ReactNode,
+  forwardRef,
   memo,
   useCallback,
-  useEffect,
+  useImperativeHandle,
   useMemo,
   useState,
-} from "react";
-import { Item, Menu, useContextMenu } from "react-contexify";
-import "react-contexify/dist/ReactContexify.css";
-import ReactDragListView from "react-drag-listview";
-import "react-resizable/css/styles.css";
-import ExcelModal from "./ExcelModal";
-import { ResizeableTitle } from "./ResizeableTitle";
-import SettingModal from "./SettingModal";
-import { ColumnsStateContext } from "./context";
+} from "react"
+import {Item, Menu, useContextMenu} from "react-contexify"
+import "react-contexify/dist/ReactContexify.css"
+import ReactDragListView from "react-drag-listview"
+import "react-resizable/css/styles.css"
+import ExcelModal from "./ExcelModal"
+import {ResizeableTitle} from "./ResizeableTitle"
+import SettingModal from "./SettingModal"
+import {ColumnsStateContext} from "./context"
 import {
   ColumnState,
   ColumnWithState,
   ColumnsState,
   Meta,
   SoulTableColumn,
-} from "./type";
-import { findColKey, getSorter, getState, getVisible } from "./util";
+} from "./type"
+import {findColKey, getSorter, getState, getVisible} from "./util"
+
+interface Handle {
+  getTableColumns(): TableColumnsType
+}
 
 export type TableProps = {
   /**
    * @description 可以在 column 中传入相关 columnState, 将作为默认值使用
    */
-  columns: SoulTableColumn[];
+  columns: SoulTableColumn[]
 
-  defaultColumnsState?: ColumnsState;
+  defaultColumnsState?: ColumnsState
 
-  columnsState?: ColumnsState;
+  columnsState?: ColumnsState
 
-  onColumnsStateChange?: Dispatch<ColumnsState>;
+  onColumnsStateChange?: (columnsState: ColumnsState) => void
+  rewriteColumns?: (columns: TableColumnsType) => TableColumnsType
+  meta?: Meta
+  toolbar?: ReactNode
+} & AntTableProps<any>
 
-  meta?: Meta;
-} & AntTableProps<any>;
+const MENU_ID = "menu-id"
 
-const MENU_ID = "menu-id";
-
-const SoulTable: FC<TableProps> = ({
-  columns: propColumns,
-  defaultColumnsState,
-  columnsState: propColumnsState,
-  onColumnsStateChange,
-  meta: propMeta,
-  dataSource: propDataSource,
-  ...tableProps
-}) => {
+const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
+  {
+    columns: propColumns,
+    defaultColumnsState,
+    columnsState: propColumnsState,
+    onColumnsStateChange,
+    meta: propMeta,
+    dataSource: propDataSource,
+    title,
+    toolbar,
+    rewriteColumns,
+    ...tableProps
+  },
+  ref
+) => {
   // 函数参数默认值对 null 无效,所以在这里写引用类型默认值
-  const columns = useMemo(() => propColumns || [], [propColumns]);
+  const columns = useMemo(() => propColumns || [], [propColumns])
   const meta = useMemo(
     () => ({
       defaultVisible: true,
       ...propMeta,
     }),
     [propMeta]
-  );
-  const [dataSource, setDateSource] = useState<any[]>([]);
+  )
+  const [dataSource, setDateSource] = useState<any[]>([])
 
   useWatch(
     propDataSource,
     (newVal) => {
-      console.log("newVal", newVal);
+      console.log("newVal", newVal)
 
-      setDateSource([...(newVal || [])]);
+      setDateSource([...(newVal || [])])
     },
-    { immediate: true }
-  );
+    {immediate: true}
+  )
 
   const [columnsState, setColumnsState] = useUncontrolled<ColumnsState>({
     value: propColumnsState,
     defaultValue: defaultColumnsState,
     finalValue: {},
     onChange: onColumnsStateChange,
-  });
+  })
 
-  const [isOpenedSetting, setIsOpenedSetting] = useState(false);
+  const [isOpenedSetting, setIsOpenedSetting] = useState(false)
   // excel modal
-  const [isOpenedExcel, setIsOpenedExcel] = useState(false);
+  const [isOpenedExcel, setIsOpenedExcel] = useState(false)
 
   // 🔥 you can use this hook from everywhere. All you need is the menu id
-  const { show } = useContextMenu({
+  const {show} = useContextMenu({
     id: MENU_ID,
-  });
+  })
 
-  type Key = keyof ColumnState;
+  type Key = keyof ColumnState
 
   const setColumnState = useCallback(
     (colKey: string, key: Key, value: ColumnState[Key]) => {
-      console.log("log:setColumnState", colKey, key, value);
+      console.log("log:setColumnState", colKey, key, value)
 
-      console.log("prev", JSON.stringify(columnsState));
+      console.log("prev", JSON.stringify(columnsState))
       const newColumns = produce(columnsState, (draft) => {
         draft[colKey] = {
           ...draft[colKey],
           [key]: value,
-        };
-      });
+        }
+      })
 
-      console.log("newColumns", JSON.stringify(newColumns));
+      console.log("newColumns", JSON.stringify(newColumns))
 
-      setColumnsState(newColumns);
+      setColumnsState(newColumns)
     },
 
     [columnsState, setColumnsState]
-  );
+  )
 
   const contextValue = useMemo(
     () => ({
@@ -128,58 +141,45 @@ const SoulTable: FC<TableProps> = ({
       setColumnState,
     }),
     [columnsState, setColumnsState, setColumnState]
-  );
+  )
 
-  const [, setIsResizing] = useState(false);
-
-  const onResizeStart = (e) => {
-    console.log("start resize");
-    setIsResizing(true);
-
-    e.stopPropagation();
-    e.preventDefault();
-  };
-
-  const onResizeStop = () => {
-    console.log("end resize");
-    setIsResizing(false);
-  };
+  /** @example { name: 100} */
+  const [widthState, setWidthState] = useState({}) // ref 不会工作
 
   const handleResize = useCallback(
     (column: TableColumnType<any>) =>
-      (_, { size }) => {
-        const colKey = findColKey(column);
-        console.log("size", size);
-
-        setColumnState(colKey, "width", size.width);
+      (_, {size}) => {
+        const colKey = findColKey(column)
+        setWidthState({
+          ...widthState,
+          [colKey]: size.width,
+        })
+        // setColumnState(colKey, "width", size.width)
       },
-    [setColumnState]
-  );
-
-  console.log("render", columnsState);
-
-  useEffect(() => {
-    console.log("columnsState:useEffect", columnsState);
-  }, [columnsState]);
+    [widthState]
+  )
 
   const tableColumns = useMemo<any>(() => {
-    console.log("useMemo", columnsState);
-
     return columns
       .filter(Boolean)
       .sort(getSorter(columnsState))
       .filter(getVisible(columnsState, meta.defaultVisible))
       .map((column) => ({
         ...column,
-        width: getState(columnsState, column)?.width || column.width,
+        ...getState(columnsState, column), // 可以把 defaultSortOrder 放上
+        width:
+          widthState[findColKey(column)] ||
+          getState(columnsState, column)?.width ||
+          column.width,
         onHeaderCell: (column) => ({
-          width: getState(columnsState, column)?.width || column.width,
+          width:
+            widthState[findColKey(column)] ||
+            getState(columnsState, column)?.width ||
+            column.width,
           onResize: handleResize(column),
-          onResizeStart: onResizeStart,
-          onResizeStop: onResizeStop,
         }),
-      }));
-  }, [columns, columnsState, handleResize, meta.defaultVisible]);
+      }))
+  }, [columns, columnsState, handleResize, meta.defaultVisible, widthState])
 
   const dragProps = {
     onDragEnd(fromIndex: number, toIndex: number) {
@@ -187,45 +187,63 @@ const SoulTable: FC<TableProps> = ({
         tableColumns,
         fromIndex,
         toIndex
-      );
+      )
 
       const newColumnsState = produce(columnsState, (draft) => {
         moved.forEach((col, idx) => {
-          const colKey = findColKey(col);
+          const colKey = findColKey(col)
           draft[colKey] = {
             ...draft[colKey],
             order: idx,
-          };
-        });
-      });
+          }
+        })
+      })
 
-      setColumnsState(newColumnsState);
+      setColumnsState(newColumnsState)
     },
-    nodeSelector: "th",
-    ignoreSelector: ".ant-table-cell-fix-left",
-  };
+    nodeSelector: "th:not(.ant-table-cell-fix-left)",
+    // ignoreSelector: ".ant-table-cell-fix-left",
+  }
 
   const dragRowProps = {
     onDragEnd(fromIndex, toIndex) {
-      const moved = arrayMoveImmutable<any>(dataSource, fromIndex, toIndex);
-      setDateSource(moved);
+      const moved = arrayMoveImmutable<any>(dataSource, fromIndex, toIndex)
+      setDateSource(moved)
     },
     handleSelector: ".drag-icon",
     // nodeSelector: 'tr.ant-table-row',
-  };
+  }
 
-  console.log("tableColumns", tableColumns);
-  console.log("dataSource", dataSource);
+  useImperativeHandle(
+    ref,
+    () => {
+      return {
+        getTableColumns: () => tableColumns,
+        // ... your methods ...
+      }
+    },
+    [tableColumns]
+  )
+
+  console.log("tableColumns", tableColumns)
+  console.log("dataSource", dataSource)
 
   return (
     <>
       <ColumnsStateContext.Provider value={contextValue}>
         <Row wrap={false}>
-          <Col flex={1}></Col>
+          <Col flex={1}>{title?.(dataSource)}</Col>
           <Col flex="none">
-            <Space style={{ marginBottom: 8, marginLeft: "auto" }}>
-              <Button onClick={() => setIsOpenedSetting(true)}>列设置</Button>
-              <Button onClick={() => setIsOpenedExcel(true)}>excel</Button>
+            <Space style={{marginBottom: 8, marginLeft: "auto"}}>
+              {toolbar}
+              <Tooltip title="导出excel">
+                {" "}
+                <Button onClick={() => setIsOpenedSetting(true)}>列设置</Button>
+              </Tooltip>
+
+              <Tooltip title="导出excel">
+                <Button onClick={() => setIsOpenedExcel(true)}>excel</Button>
+              </Tooltip>
             </Space>
           </Col>
         </Row>
@@ -233,17 +251,19 @@ const SoulTable: FC<TableProps> = ({
         <ReactDragListView.DragColumn {...dragProps}>
           <ReactDragListView {...dragRowProps}>
             <Table
-              columns={tableColumns}
-              onRow={(record) => {
-                return {
-                  onContextMenu: (event) => {
-                    show({
-                      event,
-                      props: record,
-                    });
-                  },
-                };
-              }}
+              columns={rewriteColumns?.(tableColumns) || tableColumns}
+              {...(meta.contextMenus && {
+                onRow: (record) => {
+                  return {
+                    onContextMenu: (event) => {
+                      show({
+                        event,
+                        props: record,
+                      })
+                    },
+                  }
+                },
+              })}
               components={{
                 header: {
                   cell: ResizeableTitle,
@@ -296,8 +316,9 @@ const SoulTable: FC<TableProps> = ({
         )}
       </ColumnsStateContext.Provider>
     </>
-  );
-};
+  )
+}
 
-const MemoTable = memo(SoulTable);
-export default MemoTable;
+const ForwardTable = forwardRef(SoulTable)
+const MemoTable = memo(ForwardTable)
+export default MemoTable

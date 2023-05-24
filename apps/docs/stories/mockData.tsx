@@ -1,8 +1,8 @@
 // http://mockjs.com/examples.html#Random\.first\(\)
 
-import { TableColumnsType } from "antd";
-import { Random, mock } from "mockjs";
-import React from "react";
+import {TableColumnsType} from "antd"
+import {Random, mock} from "mockjs"
+import React from "react"
 
 export const columns: TableColumnsType = [
   {
@@ -13,10 +13,12 @@ export const columns: TableColumnsType = [
   {
     title: "name",
     dataIndex: "name",
+    width: 200,
   },
   {
     title: "age",
     dataIndex: "age",
+    width: 100,
   },
   {
     title: "email",
@@ -30,7 +32,7 @@ export const columns: TableColumnsType = [
     title: "date",
     dataIndex: "date",
   },
-];
+]
 export const dataSource = Array(10)
   .fill(0)
   .map((item, idx) => ({
@@ -40,4 +42,4 @@ export const dataSource = Array(10)
     email: Random.email(),
     address: Random.county(true),
     date: mock("@datetime"),
-  }));
+  }))

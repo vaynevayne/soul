@@ -44,7 +44,8 @@
     "react-resizable": "^3.0.5"
   },
   "dependencies": {
-    "@soul/utils": "workspace:^"
+    "@soul/utils": "workspace:^",
+    "react-template": "link:/Users/vayne/wmqj/react-template"
   },
   "tsup": {
     "sourcemap": true

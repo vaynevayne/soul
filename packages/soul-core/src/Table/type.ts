@@ -1,41 +1,44 @@
-import { TableColumnType } from "antd";
-import { Dispatch, Key, ReactNode, SetStateAction } from "react";
-import { ItemParams } from "react-contexify";
+import {TableColumnType} from "antd"
+import {Dispatch, Key, ReactNode, SetStateAction} from "react"
+import {ItemParams} from "react-contexify"
 
+/**
+ *  order ,visible,disabled 是扩展的, 其他字段同 column
+ * @desc  当 columns  为全局通用配置时,可以通过 columnsState 字段调整 table 特有的字段
+ */
 export type ColumnState = {
-  order?: number;
-  visible?: boolean;
-  disabled?: boolean;
-  width?: number;
-};
+  order?: number
+  visible?: boolean
+  disabled?: boolean
+} & TableColumnType<any>
 
-export type ColumnsState = Record<string, ColumnState>;
+export type ColumnsState = Record<string, ColumnState>
 
-export type ColumnWithState = TableColumnType<any> & ColumnState;
+export type ColumnWithState = ColumnState
 
 export type Meta = {
   /**
    * 导出 excel 的默认文件名
    */
-  filename?: string;
+  filename?: string
   /**
    * 默认状态下,所有列的显示情况
    */
-  defaultVisible?: boolean;
+  defaultVisible?: boolean
 
   /**
    * 右键菜单, label用做渲染, 其他属性会传到 handleItemClick 里
    */
   contextMenus?: {
-    key?: Key;
-    children: ReactNode;
-    onClick?: (params: ItemParams<Record<string, any>, any>) => void;
-    data?: Record<string, any>;
-  }[];
+    key?: Key
+    children: ReactNode
+    onClick?: (params: ItemParams<Record<string, any>, any>) => void
+    data?: Record<string, any>
+  }[]
   /**
    * 右键菜单被点击时
    */
-  handleItemClick?: (params: ItemParams<Record<string, any>, any>) => void;
+  handleItemClick?: (params: ItemParams<Record<string, any>, any>) => void
 
   /**
    * 当 checked 被点击时调用,如果传入则需要自己处理 setState,以便支持更复杂的联动
@@ -56,8 +59,8 @@ export type Meta = {
     setLocalColumns: Dispatch<SetStateAction<any>>,
     index: number,
     column: ColumnWithState
-  ): void;
-};
+  ): void
+}
 
 export type SoulTableColumn<RecordType = unknown> =
-  TableColumnType<RecordType> & ColumnState;
+  TableColumnType<RecordType> & ColumnState
