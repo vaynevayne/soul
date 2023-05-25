@@ -1,3 +1,4 @@
+import {DownloadOutlined, SettingOutlined} from "@ant-design/icons"
 import {useUncontrolled, useWatch} from "@soul/utils"
 import {
   TableProps as AntTableProps,
@@ -13,7 +14,6 @@ import {
 import {arrayMoveImmutable} from "array-move"
 import {produce} from "immer"
 import {
-  ReactNode,
   forwardRef,
   memo,
   useCallback,
@@ -55,7 +55,6 @@ export type TableProps = {
   onColumnsStateChange?: (columnsState: ColumnsState) => void
   rewriteColumns?: (columns: TableColumnsType) => TableColumnsType
   meta?: Meta
-  toolbar?: ReactNode
 } & AntTableProps<any>
 
 const MENU_ID = "menu-id"
@@ -69,7 +68,7 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
     meta: propMeta,
     dataSource: propDataSource,
     title,
-    toolbar,
+
     rewriteColumns,
     ...tableProps
   },
@@ -234,17 +233,31 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
         <Row wrap={false}>
           <Col flex={1}>{title?.(dataSource)}</Col>
           <Col flex="none">
-            <Space style={{marginBottom: 8, marginLeft: "auto"}}>
-              {toolbar}
-              <Tooltip title="导出excel">
-                {" "}
-                <Button onClick={() => setIsOpenedSetting(true)}>列设置</Button>
-              </Tooltip>
+            {meta.toolbar === false ? null : (
+              <Space style={{marginBottom: 8, marginLeft: "auto"}}>
+                <Tooltip title="列配置">
+                  <Button
+                    type="text"
+                    onClick={() => setIsOpenedSetting(true)}
+                    size="small"
+                    icon={<SettingOutlined />}
+                  ></Button>
+                </Tooltip>
 
-              <Tooltip title="导出excel">
-                <Button onClick={() => setIsOpenedExcel(true)}>excel</Button>
-              </Tooltip>
-            </Space>
+                {meta.disableExcel ? null : (
+                  <Tooltip title="导出excel">
+                    <Button
+                      type="text"
+                      onClick={() => setIsOpenedExcel(true)}
+                      size="small"
+                      icon={<DownloadOutlined />}
+                    ></Button>
+                  </Tooltip>
+                )}
+
+                {meta.toolbar}
+              </Space>
+            )}
           </Col>
         </Row>
 
@@ -291,7 +304,7 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
           // 导出 excel
           isOpenedExcel && (
             <ExcelModal
-              columns={columns}
+              columns={tableColumns}
               dataSource={dataSource}
               open={isOpenedExcel}
               setIsOpenedExcel={setIsOpenedExcel}
@@ -306,7 +319,7 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
             {meta.contextMenus.map((item, index) => (
               <Item
                 key={item.key || index}
-                onClick={meta.handleItemClick}
+                onClick={meta.onContextMenuItemClick}
                 {...item}
               >
                 {item.children}

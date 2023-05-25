@@ -1,4 +1,4 @@
-import {TableColumnType} from "antd"
+import {ModalProps, TableColumnType} from "antd"
 import {Dispatch, Key, ReactNode, SetStateAction} from "react"
 import {ItemParams} from "react-contexify"
 
@@ -17,6 +17,11 @@ export type ColumnsState = Record<string, ColumnState>
 export type ColumnWithState = ColumnState
 
 export type Meta = {
+  toolbar?: ReactNode | boolean
+  /**
+   * 关闭默认 excel 导出, await asyncExportTableData(columns, dataSource, filename)
+   */
+  disableExcel?: boolean
   /**
    * 导出 excel 的默认文件名
    */
@@ -27,7 +32,7 @@ export type Meta = {
   defaultVisible?: boolean
 
   /**
-   * 右键菜单, label用做渲染, 其他属性会传到 handleItemClick 里
+   * 右键菜单, label用做渲染, 其他属性会传到 onContextMenuItemClick 里
    */
   contextMenus?: {
     key?: Key
@@ -35,10 +40,16 @@ export type Meta = {
     onClick?: (params: ItemParams<Record<string, any>, any>) => void
     data?: Record<string, any>
   }[]
+
+  settingModalProps?: Omit<ModalProps, "onOk"> & {
+    onOk: (columnsState: ColumnsState) => Promise<any> | void
+  }
   /**
    * 右键菜单被点击时
    */
-  handleItemClick?: (params: ItemParams<Record<string, any>, any>) => void
+  onContextMenuItemClick?: (
+    params: ItemParams<Record<string, any>, any>
+  ) => void
 
   /**
    * 当 checked 被点击时调用,如果传入则需要自己处理 setState,以便支持更复杂的联动

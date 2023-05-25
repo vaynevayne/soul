@@ -1,5 +1,4 @@
-import { asyncExportTableData, formatAntTable } from '@soul/utils';
-import { Divider, Input, Modal, ModalProps } from 'antd';
+import {Divider, Input, Modal, ModalProps} from "antd"
 import {
   ChangeEvent,
   Dispatch,
@@ -8,15 +7,16 @@ import {
   useCallback,
   useMemo,
   useState,
-} from 'react';
-import { ColumnWithState, Meta } from './type';
+} from "react"
+import {asyncExportTableData} from "./Export2Excel"
+import {ColumnWithState, Meta} from "./type"
 
 export type ExcelModalProps = {
-  columns: ColumnWithState[];
-  meta: Meta;
-  setIsOpenedExcel: Dispatch<boolean>;
-  dataSource: any[];
-} & ModalProps;
+  columns: ColumnWithState[]
+  meta: Meta
+  setIsOpenedExcel: Dispatch<boolean>
+  dataSource: any[]
+} & Omit<ModalProps, "title">
 
 const ExcelModal: FC<ExcelModalProps> = ({
   meta,
@@ -25,32 +25,28 @@ const ExcelModal: FC<ExcelModalProps> = ({
   dataSource: propDataSource,
   ...modalProps
 }) => {
-  const dataSource = useMemo(() => propDataSource || [], [propDataSource]);
+  const dataSource = useMemo(() => propDataSource || [], [propDataSource])
 
-  const [filename, setFilename] = useState(meta.filename || 'my-excel');
+  const [filename, setFilename] = useState(meta.filename || "excel")
 
   const onChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => setFilename(e.target.value.trim()),
-    [],
-  );
+    []
+  )
 
   const onDownload = async () => {
-    if (!dataSource) return;
+    if (!dataSource) return
 
     /**
      * 按照 columns 的顺序导出
      */
-    await asyncExportTableData(
-      columns?.map?.((item) => ({ ...item, field: item.dataIndex })),
-      formatAntTable(dataSource, columns),
-      filename,
-    );
-  };
+    await asyncExportTableData(columns, dataSource, filename)
+  }
 
   const onOk = () => {
-    onDownload();
-    setIsOpenedExcel(false);
-  };
+    onDownload()
+    setIsOpenedExcel(false)
+  }
 
   return (
     <Modal
@@ -62,7 +58,7 @@ const ExcelModal: FC<ExcelModalProps> = ({
       <Input value={filename} onChange={onChange} placeholder="文件名"></Input>
       <Divider />
     </Modal>
-  );
-};
+  )
+}
 
-export default memo(ExcelModal);
+export default memo(ExcelModal)

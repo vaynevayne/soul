@@ -23,6 +23,7 @@
     "array-move": "^4.0.0",
     "eslint": "^8.15.0",
     "eslint-config-soul": "workspace:*",
+    "exceljs": "^4.3.0",
     "immer": "^10.0.2",
     "lodash-es": "^4.17.21",
     "react": "^18.1.0",
@@ -37,6 +38,7 @@
   "peerDependencies": {
     "antd": "^5.5.0",
     "array-move": "^4.0.0",
+    "exceljs": "^4.3.0",
     "immer": "^10.0.2",
     "lodash-es": "^4.17.21",
     "react-contexify": "^6.0.0",
@@ -44,7 +46,9 @@
     "react-resizable": "^3.0.5"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.1.2",
     "@soul/utils": "workspace:^",
+    "numeral": "^2.0.6",
     "react-template": "link:/Users/vayne/wmqj/react-template"
   },
   "tsup": {

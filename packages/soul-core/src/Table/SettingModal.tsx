@@ -1,8 +1,8 @@
 import {useWatch} from "@soul/utils"
-import {Checkbox, Divider, Modal, ModalProps, Space} from "antd"
+import {Checkbox, Col, Divider, Modal, ModalProps, Row, Space} from "antd"
 import type {CheckboxChangeEvent} from "antd/es/checkbox"
 import {produce} from "immer"
-import {Dispatch, FC, memo, useCallback, useContext, useState} from "react"
+import {Dispatch, FC, memo, useContext, useState} from "react"
 import {ColumnsStateContext} from "./context"
 import {ColumnWithState, ColumnsState, Meta} from "./type"
 import {findColKey, getState, getVisible} from "./util"
@@ -70,7 +70,7 @@ const SettingModal: FC<SettingModalProps> = ({
     )
   }
 
-  const onOk = useCallback(() => {
+  const onOk = async (e) => {
     console.log("ok")
 
     /**
@@ -87,9 +87,11 @@ const SettingModal: FC<SettingModalProps> = ({
       })
     })
 
+    await meta?.settingModalProps?.onOk?.(newColumnsState)
+
     setColumnsState(newColumnsState)
     setIsOpenedSetting(false)
-  }, [columnsState, localColumns, setColumnsState, setIsOpenedSetting])
+  }
 
   return (
     <Modal
@@ -107,40 +109,43 @@ const SettingModal: FC<SettingModalProps> = ({
       </Checkbox>
       <Divider />
 
-      <Space size={"small"} wrap>
+      <Row>
         {localColumns.map((column, index) => {
           return (
-            <Checkbox
-              key={findColKey(column)}
-              checked={column.visible}
-              onChange={(e) => {
-                const checked = e.target.checked
-                console.log("onChange", checked)
-                if (meta.onCheckboxChange) {
-                  meta.onCheckboxChange?.(
-                    checked,
-                    setLocaleColumns,
-                    index,
-                    column
-                  )
-                } else {
-                  setLocaleColumns(
-                    produce(localColumns, (draft) => {
-                      draft[index].visible = checked
-                    })
-                  )
-                }
-              }}
-              disabled={column.disabled}
-            >
-              {typeof column.title === "function"
-                ? // 不支持带参数的title函数
-                  column.title({})
-                : column.title}
-            </Checkbox>
+            <Col span={8} key={findColKey(column)}>
+              <Checkbox
+                checked={column.visible}
+                onChange={(e) => {
+                  const checked = e.target.checked
+                  console.log("onChange", checked)
+                  if (meta.onCheckboxChange) {
+                    meta.onCheckboxChange?.(
+                      checked,
+                      setLocaleColumns,
+                      index,
+                      column
+                    )
+                  } else {
+                    setLocaleColumns(
+                      produce(localColumns, (draft) => {
+                        draft[index].visible = checked
+                      })
+                    )
+                  }
+                }}
+                disabled={column.disabled}
+              >
+                {typeof column.title === "function"
+                  ? // 不支持带参数的title函数
+                    column.title({})
+                  : column.title}
+              </Checkbox>
+            </Col>
           )
         })}
-      </Space>
+      </Row>
+
+      <Space size={"small"} wrap></Space>
     </Modal>
   )
 }
