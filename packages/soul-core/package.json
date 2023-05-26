@@ -16,6 +16,7 @@
     "clean": "rm -rf .turbo && rm -rf node_modules && rm -rf dist"
   },
   "devDependencies": {
+    "@ant-design/icons": "^5.1.2",
     "@soul/tsconfig": "workspace:*",
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.4",
@@ -26,6 +27,7 @@
     "exceljs": "^4.3.0",
     "immer": "^10.0.2",
     "lodash-es": "^4.17.21",
+    "numeral": "^2.0.6",
     "react": "^18.1.0",
     "react-contexify": "^6.0.0",
     "react-drag-listview": "^2.0.0",
@@ -36,20 +38,19 @@
     "access": "public"
   },
   "peerDependencies": {
+    "@ant-design/icons": "^5.1.2",
     "antd": "^5.5.0",
     "array-move": "^4.0.0",
     "exceljs": "^4.3.0",
     "immer": "^10.0.2",
     "lodash-es": "^4.17.21",
+    "numeral": "^2.0.6",
     "react-contexify": "^6.0.0",
     "react-drag-listview": "^2.0.0",
     "react-resizable": "^3.0.5"
   },
   "dependencies": {
-    "@ant-design/icons": "^5.1.2",
-    "@soul/utils": "workspace:^",
-    "numeral": "^2.0.6",
-    "react-template": "link:/Users/vayne/wmqj/react-template"
+    "@soul/utils": "workspace:^"
   },
   "tsup": {
     "sourcemap": true

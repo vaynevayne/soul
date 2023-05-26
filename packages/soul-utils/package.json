@@ -21,7 +21,6 @@
     "@types/react-dom": "^18.0.4",
     "eslint": "^8.15.0",
     "eslint-config-soul": "workspace:*",
-    "exceljs": "^4.3.0",
     "react": "^18.1.0",
     "typescript": "^4.5.3"
   },
@@ -30,8 +29,5 @@
   },
   "tsup": {
     "sourcemap": true
-  },
-  "peerDependencies": {
-    "exceljs": "^4.3.0"
   }
 }
