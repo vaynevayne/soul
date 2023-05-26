@@ -6,7 +6,6 @@ export const ResizeableTitle = (props) => {
   const [resizing, setIsResizing] = useState(false)
 
   const onResizeStart = (e) => {
-    console.log("start resize")
     setIsResizing(true)
 
     e.stopPropagation()
@@ -14,7 +13,6 @@ export const ResizeableTitle = (props) => {
   }
 
   const onResizeStop = () => {
-    console.log("end resize")
     setTimeout(() => {
       setIsResizing(false)
     })

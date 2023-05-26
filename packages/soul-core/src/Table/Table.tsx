@@ -88,8 +88,6 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
   useWatch(
     propDataSource,
     (newVal) => {
-      console.log("newVal", newVal)
-
       setDateSource([...(newVal || [])])
     },
     {immediate: true}
@@ -115,17 +113,12 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
 
   const setColumnState = useCallback(
     (colKey: string, key: Key, value: ColumnState[Key]) => {
-      console.log("log:setColumnState", colKey, key, value)
-
-      console.log("prev", JSON.stringify(columnsState))
       const newColumns = produce(columnsState, (draft) => {
         draft[colKey] = {
           ...draft[colKey],
           [key]: value,
         }
       })
-
-      console.log("newColumns", JSON.stringify(newColumns))
 
       setColumnsState(newColumns)
     },
@@ -163,21 +156,23 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
       .filter(Boolean)
       .sort(getSorter(columnsState))
       .filter(getVisible(columnsState, meta.defaultVisible))
-      .map((column) => ({
-        ...column,
-        ...getState(columnsState, column), // 可以把 defaultSortOrder 放上
-        width:
-          widthState[findColKey(column)] ||
-          getState(columnsState, column)?.width ||
-          column.width,
-        onHeaderCell: (column) => ({
+      .map((column) => {
+        return {
+          ...column,
+          ...getState(columnsState, column), // 可以把 defaultSortOrder 放上
           width:
             widthState[findColKey(column)] ||
             getState(columnsState, column)?.width ||
             column.width,
-          onResize: handleResize(column),
-        }),
-      }))
+          onHeaderCell: (column) => ({
+            width:
+              widthState[findColKey(column)] ||
+              getState(columnsState, column)?.width ||
+              column.width,
+            onResize: handleResize(column),
+          }),
+        }
+      })
   }, [columns, columnsState, handleResize, meta.defaultVisible, widthState])
 
   const dragProps = {
@@ -223,9 +218,6 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
     },
     [tableColumns]
   )
-
-  console.log("tableColumns", tableColumns)
-  console.log("dataSource", dataSource)
 
   return (
     <>

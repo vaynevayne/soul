@@ -8,7 +8,7 @@ import {
   useMemo,
   useState,
 } from "react"
-import {asyncExportTableData} from "./Export2Excel"
+import {asyncExportTableData} from "./asyncExportTableData"
 import {ColumnWithState, Meta} from "./type"
 
 export type ExcelModalProps = {

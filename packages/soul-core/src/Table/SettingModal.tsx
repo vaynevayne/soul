@@ -71,8 +71,6 @@ const SettingModal: FC<SettingModalProps> = ({
   }
 
   const onOk = async (e) => {
-    console.log("ok")
-
     /**
      * 允许 通过 defaultVisible=true visible=false
      * or  defaultVisible=false visible=true 来隐藏某一列, 所以所有 visible true/false 都需要保留
@@ -117,7 +115,6 @@ const SettingModal: FC<SettingModalProps> = ({
                 checked={column.visible}
                 onChange={(e) => {
                   const checked = e.target.checked
-                  console.log("onChange", checked)
                   if (meta.onCheckboxChange) {
                     meta.onCheckboxChange?.(
                       checked,

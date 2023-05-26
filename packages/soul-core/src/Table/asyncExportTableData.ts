@@ -9,7 +9,7 @@ const cellBorderStyle = {
 const formatMap = {
   rate: "0.00%",
   money: "$0.00",
-  int: "0",
+  int: "0.00",
   string: "@",
 }
 const columnMftMap = new Map()
@@ -43,15 +43,15 @@ const textToNum = (input: any, dataIndex) => {
     if (input.endsWith("%")) {
       // 兼容一下 百分号
       output = Number(input.replace("%", "")) / 100
-      console.log("dataIndex", dataIndex, output)
 
       columnMftMap.set(dataIndex, "rate")
     } else if (
+      // 判断是否数字类型字符串, 或者千分号字符串
       String(Number(input)) === input ||
       /^-?\d{1,3}(,\d{3})*(\.\d{1,2})?$/.test(input)
     ) {
-      // 判断是否数字类型字符串, 支持千分号
       output = numeral(input).value()
+
       columnMftMap.set(dataIndex, "int")
     } else {
       // 字符串
@@ -69,7 +69,7 @@ const textToNum = (input: any, dataIndex) => {
     output = input?.value
     columnMftMap.set(dataIndex, "int")
   } else {
-    console.warn("textToNum未知类型", input, dataIndex)
+    console.warn("[SoulTable]:textToNum未知类型", input, dataIndex)
   }
 
   return output
