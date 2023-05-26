@@ -1,5 +1,11 @@
 # @soul/tsconfig
 
+## 0.0.3
+
+### Patch Changes
+
+- feat(core): add Select
+
 ## 0.0.2
 
 ### Patch Changes

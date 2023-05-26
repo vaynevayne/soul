@@ -2,7 +2,6 @@
 
 import {TableColumnsType} from "antd"
 import {Random, mock} from "mockjs"
-import React from "react"
 
 export const columns: TableColumnsType = [
   {
@@ -42,4 +41,11 @@ export const dataSource = Array(10)
     email: Random.email(),
     address: Random.county(true),
     date: mock("@datetime"),
+  }))
+
+export const options = Array(10)
+  .fill(0)
+  .map((item, idx) => ({
+    label: Random.cname(),
+    value: Random.cname(),
   }))

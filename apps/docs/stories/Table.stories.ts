@@ -1,9 +1,12 @@
 import {SoulTable} from "@soul/core"
 import type {Meta, StoryObj} from "@storybook/react"
+import "react-contexify/dist/ReactContexify.css"
+import "react-resizable/css/styles.css"
 import {columns, dataSource} from "./mockData"
+
 // More on how to set up stories at: https://storybook.js.org/docs/react/writing-stories/introduction
 const meta = {
-  title: "Example/Table",
+  title: "Components/Table",
   component: SoulTable,
   tags: ["autodocs"],
   // argTypes: {
