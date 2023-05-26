@@ -17,8 +17,8 @@
   },
   "devDependencies": {
     "@soul/tsconfig": "workspace:*",
-    "@types/react": "^18.0.9",
-    "@types/react-dom": "^18.0.4",
+    "@types/react": "^18.2.7",
+    "@types/react-dom": "^18.2.4",
     "eslint": "^8.15.0",
     "eslint-config-soul": "workspace:*",
     "react": "^18.1.0",

@@ -18,8 +18,8 @@
   "devDependencies": {
     "@ant-design/icons": "^5.1.2",
     "@soul/tsconfig": "workspace:*",
-    "@types/react": "^18.0.9",
-    "@types/react-dom": "^18.0.4",
+    "@types/react": "^18.2.7",
+    "@types/react-dom": "^18.2.4",
     "antd": "^5.5.0",
     "array-move": "^4.0.0",
     "eslint": "^8.15.0",
