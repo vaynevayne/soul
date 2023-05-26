@@ -1,5 +1,13 @@
 # @soul/core
 
+## 0.0.2
+
+### Patch Changes
+
+- df611f7: feat(core):[Table] support excel
+- Updated dependencies [df611f7]
+  - @soul/utils@0.0.2
+
 ## 0.0.1
 
 ### Patch Changes
