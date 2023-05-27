@@ -1,9 +1,9 @@
 // Button.stories.ts|tsx
 
-import {SoulSelect, SoulSelectProps} from "@soul/core"
-import type {Meta, StoryObj} from "@storybook/react"
-import {useState} from "react"
-import {options} from "./mockData"
+import { SoulSelect } from "@soul/core";
+import type { Meta, StoryObj } from "@storybook/react";
+import { useState } from "react";
+import { options } from "./mockData";
 
 const meta: Meta<typeof SoulSelect> = {
   /* 👇 The title prop is optional.
@@ -12,44 +12,72 @@ const meta: Meta<typeof SoulSelect> = {
    */
   title: "Components/Select",
   component: SoulSelect,
-}
+};
 
-export default meta
-type Story = StoryObj<typeof SoulSelect>
+export default meta;
+type Story = StoryObj<typeof SoulSelect>;
 
-/*
- * Example Button story with React Hooks.
- * See note below related to this example.
+/**
+ *
+ * @param param0 [{label:'',value:[],mode:'',...}]
+ * @returns
  */
-const UnControlled = ({...rest}) => {
-  const [value, setValue] = useState([])
-  console.log("value", value)
-  return <SoulSelect value={value} onChange={setValue} {...rest}></SoulSelect>
-}
+const UnControlled = ({ ...rest }) => {
+  const [value, setValue] = useState([]);
+  console.log("value", value);
 
-const Controlled = ({...rest}) => {
-  const [value, setValue] = useState([])
-  const [sMode, setSMode] = useState<SoulSelectProps["sMode"]>("whereIn")
+  let storeKey = "preset_country";
+  return (
+    <SoulSelect
+      style={{ width: 200 }}
+      value={value}
+      popupMatchSelectWidth={400}
+      onChange={setValue}
+      soul={{
+        defaultMode: "whereIn",
+        onModeChange: (mode) => {
+          console.log("mode", mode);
+        },
+        getPresets: () => JSON.parse(localStorage.getItem(storeKey) || "[]"),
+        deletePreset: async (val) => {
+          const list = JSON.parse(localStorage.getItem(storeKey) || "[]");
 
-  console.log("sMode", sMode)
-  console.log("value", value)
+          localStorage.setItem(
+            storeKey,
+            JSON.stringify(list.filter((item) => item.label !== val.label))
+          );
+        },
+        addPreset: async (preset) => {
+          console.log("addPreset", preset);
+
+          const list = JSON.parse(localStorage.getItem(storeKey) || "[]");
+          localStorage.setItem(storeKey, JSON.stringify(list.concat(preset)));
+        },
+      }}
+      {...rest}
+    ></SoulSelect>
+  );
+};
+
+const Controlled = ({ ...rest }) => {
+  const [value, setValue] = useState([]);
+  const [mode, setMode] = useState("whereIn");
+
+  console.log("mode", mode);
+  console.log("value", value);
   return (
     <SoulSelect
       placeholder="受控模式"
       value={value}
+      soul={{
+        mode: mode,
+        onModeChange: setMode,
+      }}
       onChange={setValue}
-      sMode={sMode}
-      onSModeChange={setSMode}
-      sModeList={[
-        {
-          label: "反选",
-          value: "whereNotIn",
-        },
-      ]}
       {...rest}
     ></SoulSelect>
-  )
-}
+  );
+};
 
 /*
  *👇 Render functions are a framework specific feature to allow you control on how the component renders.
@@ -59,9 +87,9 @@ const Controlled = ({...rest}) => {
 export const UnControlledMode: Story = {
   name: "非受控模式",
   render: () => <UnControlled options={options} />,
-}
+};
 
 export const ControlledMode: Story = {
   name: "受控模式",
   render: () => <Controlled options={options} />,
-}
+};
