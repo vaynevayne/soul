@@ -1,4 +1,4 @@
-import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
+import { CheckOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { useUncontrolled } from "@soul/utils";
 import {
   Select as AntSelect,
@@ -6,11 +6,19 @@ import {
   Button,
   Checkbox,
   Divider,
+  Dropdown,
   Input,
+  MenuProps,
   Space,
   Tooltip,
 } from "antd";
 import { useState } from "react";
+
+const flexBetweenStyle = {
+  display: "flex",
+  alignItems: "center",
+  gap: 8,
+};
 
 // 不需要传匹配
 const defaultModeList: Array<{
@@ -73,13 +81,11 @@ const Select = ({
     finalValue: "whereIn",
   });
 
-  console.log("Select:mode", mode);
-
-  const [open, setOpen] = useState(true); // 浮层受控
+  const [open, setOpen] = useState(false); // 浮层受控
 
   const [presets, setPresets] = useState<Array<Preset>>();
   const [label, setLabel] = useState<string>("");
-
+  const [isAddSuccess, setIsAddSuccess] = useState(false);
   const modeList = soul.modeList || defaultModeList;
 
   /**
@@ -92,8 +98,8 @@ const Select = ({
     setOpen(visible);
     onDropdownVisibleChange?.(visible);
   };
+
   const onDelete = async (preset: Preset) => {
-    console.log("onDelete", preset);
     await soul.deletePreset?.(preset);
     const _presets = await soul.getPresets?.();
     setPresets(_presets);
@@ -109,6 +115,10 @@ const Select = ({
     const _presets = await soul.getPresets?.();
     setPresets(_presets);
     setLabel("");
+    setIsAddSuccess(true);
+    setTimeout(() => {
+      setIsAddSuccess(false);
+    }, 2000);
   };
 
   const onPresetClick = (preset) => {
@@ -117,98 +127,84 @@ const Select = ({
     setOpen(false);
   };
 
+  const items: MenuProps["items"] =
+    presets?.map((preset) => ({
+      key: preset.label,
+      label: (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+          }}
+          onClick={() => onPresetClick(preset)}
+        >
+          {preset.label}
+          <Button
+            type="text"
+            size="small"
+            icon={<DeleteOutlined />}
+            onClick={(e) => {
+              e.preventDefault();
+              onDelete(preset);
+            }}
+          ></Button>
+        </div>
+      ),
+    })) || [];
+
   return (
     <AntSelect
       mode={["like", "notLike"].includes(mode) ? "tags" : "multiple"}
       maxTagCount={"responsive"}
-      style={{ width: "100%" }}
       allowClear
       value={value}
       open={open}
       onDropdownVisibleChange={_onDropdownVisibleChange}
       dropdownRender={(menu) => (
-        <div
-          style={{
-            display: "flex",
-          }}
-        >
-          <div
-            style={{
-              flex: "none",
-              minWidth: 50,
-              maxWidth: 120,
-              display: "flex",
-              borderInlineEnd: "1px solid rgba(5, 5, 5, 0.06)",
-            }}
-          >
-            <div
-              style={{
-                padding: 8,
-                display: "flex",
-                flex: 1,
-                flexDirection: "column",
-                gap: 8,
+        <>
+          <div style={flexBetweenStyle}>
+            <Dropdown menu={{ items }}>
+              <a onClick={(e) => e.preventDefault()} style={{ marginLeft: 8 }}>
+                <Space wrap={false}>预设</Space>
+              </a>
+            </Dropdown>
+
+            <Input
+              placeholder="名称"
+              size="small"
+              style={{ maxWidth: 150, marginLeft: "auto" }}
+              value={label}
+              onChange={(e) => {
+                setLabel(e.target.value);
               }}
-            >
-              {presets?.map((preset) => (
-                <div
-                  style={{ display: "flex", alignItems: "center" }}
-                  key={preset.label}
-                >
-                  <Button
-                    type="text"
-                    key={preset.label}
-                    size={"small"}
-                    style={{ flex: 1, textAlign: "left" }}
-                    onClick={() => onPresetClick(preset)}
-                  >
-                    {preset.label}
-                  </Button>
-                  <Button
-                    type="text"
-                    size={"small"}
-                    icon={<DeleteOutlined onClick={() => onDelete(preset)} />}
-                  ></Button>
-                </div>
-              ))}
-              <Space style={{ marginTop: "auto" }}>
-                <Input
-                  size="small"
-                  placeholder="添加预设"
-                  value={label}
-                  onChange={(e) => setLabel(e.target.value)}
-                />
-                <Tooltip title="将当前选中值及状态存在预设">
-                  <Button
-                    type="text"
-                    icon={<PlusOutlined />}
-                    size={"small"}
-                    onClick={onAddPreset}
-                  ></Button>
-                </Tooltip>
-              </Space>
-            </div>
+            />
+            <Button
+              type={isAddSuccess ? "link" : "text"}
+              size="small"
+              icon={isAddSuccess ? <CheckOutlined /> : <PlusOutlined />}
+              onClick={onAddPreset}
+            ></Button>
           </div>
 
-          <div style={{ flex: 1 }}>
-            {menu}
-            <Divider style={{ margin: "8px 0" }} />
-            <Space style={{ padding: "0 8px 4px" }}>
-              {modeList.map((item) => (
-                <Tooltip title={item?.tooltip} key={item.value}>
-                  <Checkbox
-                    checked={mode === item.value}
-                    onChange={(e) => {
-                      setMode(e.target.checked ? item.value : "whereIn");
-                    }}
-                  >
-                    {item.label}
-                  </Checkbox>
-                </Tooltip>
-              ))}
-            </Space>
-          </div>
-        </div>
+          <Divider style={{ margin: "8px 0" }} />
+          {menu}
+
+          <Space wrap>
+            {modeList.map((item) => (
+              <Tooltip title={item?.tooltip} key={item.value}>
+                <Checkbox
+                  checked={mode === item.value}
+                  onChange={(e) => {
+                    setMode(e.target.checked ? item.value : "whereIn");
+                  }}
+                >
+                  {item.label}
+                </Checkbox>
+              </Tooltip>
+            ))}
+          </Space>
+        </>
       )}
       {...other}
     />

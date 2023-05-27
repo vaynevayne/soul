@@ -1,21 +1,21 @@
 // Button.stories.ts|tsx
 
-import { SoulSelect } from "@soul/core";
+import { SoulSideSelect } from "@soul/core";
 import type { Meta, StoryObj } from "@storybook/react";
 import { useState } from "react";
 import { options } from "./mockData";
 
-const meta: Meta<typeof SoulSelect> = {
+const meta: Meta<typeof SoulSideSelect> = {
   /* 👇 The title prop is optional.
    * See https://storybook.js.org/docs/react/configure/overview#configure-story-loading
    * to learn how to generate automatic titles
    */
-  title: "Components/Select",
-  component: SoulSelect,
+  title: "Components/SideSelect",
+  component: SoulSideSelect,
 };
 
 export default meta;
-type Story = StoryObj<typeof SoulSelect>;
+type Story = StoryObj<typeof SoulSideSelect>;
 
 /**
  *
@@ -24,11 +24,14 @@ type Story = StoryObj<typeof SoulSelect>;
  */
 const UnControlled = ({ ...rest }) => {
   const [value, setValue] = useState([]);
+  console.log("value", value);
 
   let storeKey = "preset_country";
   return (
-    <SoulSelect
+    <SoulSideSelect
+      style={{ width: 200 }}
       value={value}
+      popupMatchSelectWidth={400}
       onChange={setValue}
       soul={{
         defaultMode: "whereIn",
@@ -52,7 +55,7 @@ const UnControlled = ({ ...rest }) => {
         },
       }}
       {...rest}
-    ></SoulSelect>
+    ></SoulSideSelect>
   );
 };
 
@@ -63,7 +66,7 @@ const Controlled = ({ ...rest }) => {
   console.log("mode", mode);
   console.log("value", value);
   return (
-    <SoulSelect
+    <SoulSideSelect
       placeholder="受控模式"
       value={value}
       soul={{
@@ -72,7 +75,7 @@ const Controlled = ({ ...rest }) => {
       }}
       onChange={setValue}
       {...rest}
-    ></SoulSelect>
+    ></SoulSideSelect>
   );
 };
 
@@ -81,12 +84,12 @@ const Controlled = ({ ...rest }) => {
  * See https://storybook.js.org/docs/react/api/csf
  * to learn how to use render functions.
  */
-export const UnControlledSelect: Story = {
+export const UnControlledSideSelect: Story = {
   name: "非受控模式",
   render: () => <UnControlled options={options} />,
 };
 
-export const ControlledSelect: Story = {
+export const ControlledSideSelect: Story = {
   name: "受控模式",
   render: () => <Controlled options={options} />,
 };
