@@ -1,22 +1,20 @@
-import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
-import { useUncontrolled } from "@soul/utils";
+import {DeleteOutlined, PlusOutlined} from "@ant-design/icons"
+import {useUncontrolled} from "@soul/utils"
 import {
   Select as AntSelect,
   SelectProps as AntSelectProps,
   Button,
   Checkbox,
   Divider,
-  Input,
   Space,
   Tooltip,
-} from "antd";
-import { useState } from "react";
+} from "antd"
 
 // 不需要传匹配
 const defaultModeList: Array<{
-  label: string;
-  value: Mode;
-  tooltip?: string;
+  label: string
+  value: Mode
+  tooltip?: string
 }> = [
   // {
   //   label: "匹配",
@@ -34,185 +32,205 @@ const defaultModeList: Array<{
     label: "不包含",
     value: "notLike",
   },
-];
+]
 
-type Mode = string;
+type Mode = string
 
-type Preset = {
-  label: string;
-  value: any;
-  mode: Mode;
-  [index: string]: any;
-};
+export type Preset = {
+  label: string
+  value: any
+  mode: Mode
+  [index: string]: any
+}
+
 export type SelectProps = AntSelectProps & {
   soul?: {
-    defaultMode?: Mode;
-    mode?: Mode;
-    onModeChange?: (mode: Mode) => void;
+    defaultMode?: Mode
+    optionsWidth?: number
+    presetsWidth?: number
+    mode?: Mode
+    onModeChange?: (mode: Mode) => void
     modeList?: Array<{
-      label: string;
-      value: Mode;
-      tooltip?: string;
-    }>;
-    getPresets?: () => Promise<Array<Preset>>;
-    deletePreset?: (val: Preset) => Promise<any>;
-    addPreset?: (params: Preset) => Promise<any>;
-  };
-};
+      label: string
+      value: Mode
+      tooltip?: string
+    }>
 
-const Select = ({
-  soul = {},
-  onDropdownVisibleChange,
-  value,
-  ...other
-}: SelectProps) => {
+    presets?: Array<Preset>
+    onDeletePreset?: (val: Preset) => void
+    onAddPreset?: (params: Preset) => void
+  }
+}
+
+const Select = ({soul = {}, value, onChange, ...other}: SelectProps) => {
+  const {
+    defaultMode = "whereIn",
+    mode: propMode,
+    optionsWidth,
+    presetsWidth,
+    presets = [],
+    modeList = defaultModeList,
+    onDeletePreset = () => {},
+    onAddPreset = () => {},
+    onModeChange = () => {},
+  } = soul
+
   const [mode, setMode] = useUncontrolled({
-    value: soul.mode,
-    onChange: soul.onModeChange,
-    defaultValue: soul.defaultMode,
+    value: propMode,
+    onChange: onModeChange,
+    defaultValue: defaultMode,
     finalValue: "whereIn",
-  });
-
-  console.log("Select:mode", mode);
-
-  const [open, setOpen] = useState(true); // 浮层受控
-
-  const [presets, setPresets] = useState<Array<Preset>>();
-  const [label, setLabel] = useState<string>("");
-
-  const modeList = soul.modeList || defaultModeList;
-
-  /**
-   *
-   * @param visible 浮层展开时,再请求预设
-   */
-  const _onDropdownVisibleChange = async (visible) => {
-    const _presets = await soul.getPresets?.();
-    setPresets(_presets);
-    setOpen(visible);
-    onDropdownVisibleChange?.(visible);
-  };
-  const onDelete = async (preset: Preset) => {
-    console.log("onDelete", preset);
-    await soul.deletePreset?.(preset);
-    const _presets = await soul.getPresets?.();
-    setPresets(_presets);
-  };
-
-  const onAddPreset = async () => {
-    if (!label) return;
-    await soul.addPreset?.({
-      label: label.trim(),
-      value: value,
-      mode: mode as Mode,
-    });
-    const _presets = await soul.getPresets?.();
-    setPresets(_presets);
-    setLabel("");
-  };
+  })
 
   const onPresetClick = (preset) => {
-    setMode(preset.mode);
-    other?.onChange?.(preset.value, preset);
-    setOpen(false);
-  };
+    setMode(preset.mode)
+    onChange?.(preset.value, preset)
+  }
 
   return (
-    <AntSelect
-      mode={["like", "notLike"].includes(mode) ? "tags" : "multiple"}
-      maxTagCount={"responsive"}
-      style={{ width: "100%" }}
-      allowClear
-      value={value}
-      open={open}
-      onDropdownVisibleChange={_onDropdownVisibleChange}
-      dropdownRender={(menu) => (
-        <div
-          style={{
-            display: "flex",
-          }}
-        >
-          <div
-            style={{
-              flex: "none",
-              minWidth: 50,
-              maxWidth: 120,
-              display: "flex",
-              borderInlineEnd: "1px solid rgba(5, 5, 5, 0.06)",
-            }}
-          >
+    <>
+      <AntSelect
+        mode={["like", "notLike"].includes(mode) ? "tags" : "multiple"}
+        maxTagCount={"responsive"}
+        allowClear
+        value={value}
+        onChange={onChange}
+        suffixIcon={
+          <span>{modeList.find((it) => it.value === mode)?.label}</span>
+        }
+        dropdownRender={(menu) => (
+          <div>
             <div
               style={{
-                padding: 8,
                 display: "flex",
-                flex: 1,
-                flexDirection: "column",
-                gap: 8,
+              }}
+              onMouseDown={(e) => {
+                e.preventDefault()
+                e.stopPropagation()
               }}
             >
-              {presets?.map((preset) => (
-                <div
-                  style={{ display: "flex", alignItems: "center" }}
-                  key={preset.label}
-                >
-                  <Button
-                    type="text"
-                    key={preset.label}
-                    size={"small"}
-                    style={{ flex: 1, textAlign: "left" }}
-                    onClick={() => onPresetClick(preset)}
-                  >
-                    {preset.label}
-                  </Button>
-                  <Button
-                    type="text"
-                    size={"small"}
-                    icon={<DeleteOutlined onClick={() => onDelete(preset)} />}
-                  ></Button>
-                </div>
-              ))}
-              <Space style={{ marginTop: "auto" }}>
-                <Input
-                  size="small"
-                  placeholder="添加预设"
-                  value={label}
-                  onChange={(e) => setLabel(e.target.value)}
-                />
-                <Tooltip title="将当前选中值及状态存在预设">
-                  <Button
-                    type="text"
-                    icon={<PlusOutlined />}
-                    size={"small"}
-                    onClick={onAddPreset}
-                  ></Button>
-                </Tooltip>
-              </Space>
-            </div>
-          </div>
+              <div style={{flexBasis: optionsWidth}}>{menu}</div>
+              <div
+                style={{
+                  flex: "none",
 
-          <div style={{ flex: 1 }}>
-            {menu}
-            <Divider style={{ margin: "8px 0" }} />
+                  flexBasis: presetsWidth,
+                  // maxWidth: "20%",
+                  display: "flex",
+                  // overflow: "scroll",
+                  borderInlineStart: "1px solid rgba(5, 5, 5, 0.06)",
+                  flexDirection: "column",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    flex: 1, // 让按钮全宽
+                    flexDirection: "column",
+                  }}
+                >
+                  {presets?.map((preset) => (
+                    <Button
+                      type="text"
+                      key={preset.label}
+                      size={"small"}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                      }}
+                      onMouseDown={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                      }}
+                      onClick={() => onPresetClick(preset)}
+                    >
+                      <span
+                        style={{
+                          flex: 1,
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        {preset.label}
+                      </span>
+
+                      <DeleteOutlined
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          e.preventDefault()
+                          onDeletePreset(preset)
+                        }}
+                      />
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <Divider style={{margin: "4px 0"}} />
             <Space wrap>
               {modeList.map((item) => (
                 <Tooltip title={item?.tooltip} key={item.value}>
                   <Checkbox
                     checked={mode === item.value}
                     onChange={(e) => {
-                      setMode(e.target.checked ? item.value : "whereIn");
+                      setMode(e.target.checked ? item.value : "whereIn")
                     }}
                   >
                     {item.label}
                   </Checkbox>
                 </Tooltip>
               ))}
+
+              <Tooltip title="添加预设">
+                <Button
+                  type="text"
+                  icon={<PlusOutlined />}
+                  size={"small"}
+                  onClick={async () => {
+                    const presetLabel = window.prompt("预设名称")
+                    if (!presetLabel) {
+                      return
+                    }
+
+                    onAddPreset({
+                      label: presetLabel.trim(),
+                      value: value,
+                      mode: mode as Mode,
+                    })
+
+                    // setLabelOpen(true)
+                  }}
+                ></Button>
+              </Tooltip>
             </Space>
           </div>
-        </div>
-      )}
-      {...other}
-    />
-  );
-};
+        )}
+        {...other}
+      />
+      {/* <Modal
+        title="Title"
+        open={isLabelOpen}
+        onOk={async () => {
+          await onAddPreset()
+          setLabelOpen(false)
+        }}
+        onCancel={() => {
+          setLabelOpen(false)
+          console.log("onCancel")
+        }}
+        zIndex={1051}
+      >
+        <Input
+          size="small"
+          placeholder="添加预设"
+          value={label}
+          onChange={(e) => setLabel(e.target.value)}
+        />
+      </Modal> */}
+    </>
+  )
+}
 
-export default Select;
+export default Select

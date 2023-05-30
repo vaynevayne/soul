@@ -1,5 +1,10 @@
-import { CheckOutlined, DeleteOutlined, PlusOutlined } from "@ant-design/icons";
-import { useUncontrolled } from "@soul/utils";
+import {
+  CheckOutlined,
+  DeleteOutlined,
+  DownOutlined,
+  PlusOutlined,
+} from "@ant-design/icons"
+import {useUncontrolled} from "@soul/utils"
 import {
   Select as AntSelect,
   SelectProps as AntSelectProps,
@@ -11,20 +16,20 @@ import {
   MenuProps,
   Space,
   Tooltip,
-} from "antd";
-import { useState } from "react";
+} from "antd"
+import {useState} from "react"
 
 const flexBetweenStyle = {
   display: "flex",
   alignItems: "center",
   gap: 8,
-};
+}
 
 // 不需要传匹配
 const defaultModeList: Array<{
-  label: string;
-  value: Mode;
-  tooltip?: string;
+  label: string
+  value: Mode
+  tooltip?: string
 }> = [
   // {
   //   label: "匹配",
@@ -42,31 +47,31 @@ const defaultModeList: Array<{
     label: "不包含",
     value: "notLike",
   },
-];
+]
 
-type Mode = string;
+type Mode = string
 
 type Preset = {
-  label: string;
-  value: any;
-  mode: Mode;
-  [index: string]: any;
-};
+  label: string
+  value: any
+  mode: Mode
+  [index: string]: any
+}
 export type SelectProps = AntSelectProps & {
   soul?: {
-    defaultMode?: Mode;
-    mode?: Mode;
-    onModeChange?: (mode: Mode) => void;
+    defaultMode?: Mode
+    mode?: Mode
+    onModeChange?: (mode: Mode) => void
     modeList?: Array<{
-      label: string;
-      value: Mode;
-      tooltip?: string;
-    }>;
-    getPresets?: () => Promise<Array<Preset>>;
-    deletePreset?: (val: Preset) => Promise<any>;
-    addPreset?: (params: Preset) => Promise<any>;
-  };
-};
+      label: string
+      value: Mode
+      tooltip?: string
+    }>
+    getPresets?: () => Promise<Array<Preset>>
+    deletePreset?: (val: Preset) => Promise<any>
+    addPreset?: (params: Preset) => Promise<any>
+  }
+}
 
 const Select = ({
   soul = {},
@@ -79,53 +84,53 @@ const Select = ({
     onChange: soul.onModeChange,
     defaultValue: soul.defaultMode,
     finalValue: "whereIn",
-  });
+  })
 
-  const [open, setOpen] = useState(false); // 浮层受控
+  const [open, setOpen] = useState(false) // 浮层受控
 
-  const [presets, setPresets] = useState<Array<Preset>>();
-  const [label, setLabel] = useState<string>("");
-  const [isAddSuccess, setIsAddSuccess] = useState(false);
-  const modeList = soul.modeList || defaultModeList;
+  const [presets, setPresets] = useState<Array<Preset>>()
+  const [label, setLabel] = useState<string>("")
+  const [isAddSuccess, setIsAddSuccess] = useState(false)
+  const modeList = soul.modeList || defaultModeList
 
   /**
    *
    * @param visible 浮层展开时,再请求预设
    */
   const _onDropdownVisibleChange = async (visible) => {
-    const _presets = await soul.getPresets?.();
-    setPresets(_presets);
-    setOpen(visible);
-    onDropdownVisibleChange?.(visible);
-  };
+    const _presets = await soul.getPresets?.()
+    setPresets(_presets)
+    setOpen(visible)
+    onDropdownVisibleChange?.(visible)
+  }
 
   const onDelete = async (preset: Preset) => {
-    await soul.deletePreset?.(preset);
-    const _presets = await soul.getPresets?.();
-    setPresets(_presets);
-  };
+    await soul.deletePreset?.(preset)
+    const _presets = await soul.getPresets?.()
+    setPresets(_presets)
+  }
 
   const onAddPreset = async () => {
-    if (!label) return;
+    if (!label) return
     await soul.addPreset?.({
       label: label.trim(),
       value: value,
       mode: mode as Mode,
-    });
-    const _presets = await soul.getPresets?.();
-    setPresets(_presets);
-    setLabel("");
-    setIsAddSuccess(true);
+    })
+    const _presets = await soul.getPresets?.()
+    setPresets(_presets)
+    setLabel("")
+    setIsAddSuccess(true)
     setTimeout(() => {
-      setIsAddSuccess(false);
-    }, 2000);
-  };
+      setIsAddSuccess(false)
+    }, 2000)
+  }
 
   const onPresetClick = (preset) => {
-    setMode(preset.mode);
-    other?.onChange?.(preset.value, preset);
-    setOpen(false);
-  };
+    setMode(preset.mode)
+    other?.onChange?.(preset.value, preset)
+    setOpen(false)
+  }
 
   const items: MenuProps["items"] =
     presets?.map((preset) => ({
@@ -137,6 +142,10 @@ const Select = ({
             alignItems: "center",
             justifyContent: "space-between",
           }}
+          onMouseDown={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+          }}
           onClick={() => onPresetClick(preset)}
         >
           {preset.label}
@@ -145,13 +154,13 @@ const Select = ({
             size="small"
             icon={<DeleteOutlined />}
             onClick={(e) => {
-              e.preventDefault();
-              onDelete(preset);
+              e.preventDefault()
+              onDelete(preset)
             }}
           ></Button>
         </div>
       ),
-    })) || [];
+    })) || []
 
   return (
     <AntSelect
@@ -163,20 +172,28 @@ const Select = ({
       onDropdownVisibleChange={_onDropdownVisibleChange}
       dropdownRender={(menu) => (
         <>
-          <div style={flexBetweenStyle}>
-            <Dropdown menu={{ items }}>
-              <a onClick={(e) => e.preventDefault()} style={{ marginLeft: 8 }}>
-                <Space wrap={false}>预设</Space>
+          <div
+            style={flexBetweenStyle}
+            // onMouseDown={(e) => {
+            //   e.preventDefault()
+            //   e.stopPropagation()
+            // }}
+          >
+            <Dropdown menu={{items}}>
+              <a onClick={(e) => e.preventDefault()} style={{marginLeft: 8}}>
+                <Space wrap={false}>
+                  预设 <DownOutlined></DownOutlined>
+                </Space>
               </a>
             </Dropdown>
 
             <Input
-              placeholder="名称"
+              placeholder="添加预设名称"
               size="small"
-              style={{ maxWidth: 150, marginLeft: "auto" }}
+              style={{maxWidth: 150, marginLeft: "auto"}}
               value={label}
               onChange={(e) => {
-                setLabel(e.target.value);
+                setLabel(e.target.value)
               }}
             />
             <Button
@@ -187,16 +204,17 @@ const Select = ({
             ></Button>
           </div>
 
-          <Divider style={{ margin: "8px 0" }} />
+          <Divider style={{margin: "8px 0"}} />
           {menu}
+          <Divider style={{margin: "8px 0"}} />
 
-          <Space wrap>
+          <Space wrap style={{paddingLeft: 8, paddingRight: 8}}>
             {modeList.map((item) => (
               <Tooltip title={item?.tooltip} key={item.value}>
                 <Checkbox
                   checked={mode === item.value}
                   onChange={(e) => {
-                    setMode(e.target.checked ? item.value : "whereIn");
+                    setMode(e.target.checked ? item.value : "whereIn")
                   }}
                 >
                   {item.label}
@@ -208,7 +226,7 @@ const Select = ({
       )}
       {...other}
     />
-  );
-};
+  )
+}
 
-export default Select;
+export default Select

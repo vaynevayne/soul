@@ -1,5 +1,13 @@
 # @soul/core
 
+## 0.0.4
+
+### Patch Changes
+
+- feat(core): add SideSelect
+- Updated dependencies
+  - @soul/utils@0.0.4
+
 ## 0.0.3
 
 ### Patch Changes
