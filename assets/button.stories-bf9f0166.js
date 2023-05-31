@@ -1,8 +1,0 @@
-import"./chunk-PCJTTTQV-caeabd32.js";import{M as m,d as c,e as p,f as l}from"./index-8b2f07c1.js";import{j as t,a as u,F as d}from"./jsx-runtime-91a467a5.js";import{u as i}from"./index-1d576ef5.js";import"./iframe-082c2e58.js";import"../sb-preview/runtime.js";import"./index-8db94870.js";import"./_commonjsHelpers-042e6b4d.js";import"./react-16-c08fd439.js";import"./index-1a3285a9.js";import"./index-d475d2ea.js";import"./extends-7af05113.js";import"./index-d37d4223.js";import"./index-b2216ac2.js";import"./index-d80316c4.js";import"./index-356e4a49.js";function n(e){return t("button",{children:e.children})}n.displayName="Button";function s(e){const o=Object.assign({h1:"h1",p:"p",h2:"h2"},i(),e.components);return u(d,{children:[t(m,{title:"Components/Button",component:n}),`
-`,t(o.h1,{id:"button",children:"Button"}),`
-`,t(o.p,{children:"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl eget consectetur tempor, nisl nunc egestas nisi, euismod aliquam nisl nunc euismod."}),`
-`,t(o.h2,{id:"props",children:"Props"}),`
-`,t(c,{of:n}),`
-`,t(o.h2,{id:"examples",children:"Examples"}),`
-`,t(p,{children:t(l,{name:"Default",children:t(n,{children:"Hello"})})})]})}function h(e={}){const{wrapper:o}=Object.assign({},i(),e.components);return o?t(o,{...e,children:t(s,{...e})}):s(e)}const a=()=>t(n,{children:"Hello"});a.storyName="Default";a.parameters={storySource:{source:'<Button>{"Hello"}</Button>'}};const r={title:"Components/Button",component:n,tags:["stories-mdx"],includeStories:["defaultStory"]};r.parameters=r.parameters||{};r.parameters.docs={...r.parameters.docs||{},page:h};const F=["defaultStory"];export{F as __namedExportsOrder,r as default,a as defaultStory};
-//# sourceMappingURL=button.stories-bf9f0166.js.map
