@@ -2,7 +2,7 @@ import {CloseOutlined, MenuOutlined, SearchOutlined} from "@ant-design/icons"
 import {Col, Divider, Input, Modal, ModalProps, Row, Space, Tabs} from "antd"
 import {arrayMoveImmutable} from "array-move"
 import {produce} from "immer"
-import {groupBy} from "lodash-es"
+import {groupBy, omit} from "lodash-es"
 import {FC, memo, useContext, useMemo, useState} from "react"
 import ReactDragListView from "react-drag-listview"
 import CheckAllSection from "./CheckAllSection"
@@ -241,10 +241,13 @@ const SettingModal2: FC<SettingModal2Props> = ({
                 setColumnsState(
                   produce(columnsState, (draft) => {
                     Object.entries(columnsState).forEach(([field, state]) => {
-                      draft[field] = {
-                        ...draft[field],
-                        visible: false,
-                      }
+                      draft[field] = omit(
+                        {
+                          ...draft[field],
+                          visible: false,
+                        },
+                        ["sortOrder"]
+                      )
                     })
                   })
                 )

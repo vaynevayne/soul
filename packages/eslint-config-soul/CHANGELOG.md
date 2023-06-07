@@ -1,5 +1,11 @@
 # eslint-config-soul
 
+## 0.0.5
+
+### Patch Changes
+
+- feat(core): omit sortOrder when clean
+
 ## 0.0.4
 
 ### Patch Changes

@@ -23,3 +23,8 @@ import "react-resizable/css/styles.css"
 - git commit -m 'feat(core): Table add Settings'
 - git push
 - 通过 github action 自动发布到 npm
+
+业务项目
+pnpm unlink ~/wmqj/soul/packages/soul-core
+pnpm unlink ~/wmqj/soul/packages/soul-utils
+pnpm add @soul/core @soul/utils

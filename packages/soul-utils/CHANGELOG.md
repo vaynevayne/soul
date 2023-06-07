@@ -1,5 +1,11 @@
 # @soul/utils
 
+## 0.0.6
+
+### Patch Changes
+
+- feat(core): omit sortOrder when clean
+
 ## 0.0.5
 
 ### Patch Changes
