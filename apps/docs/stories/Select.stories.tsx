@@ -67,6 +67,7 @@ const Controlled = ({...rest}) => {
     <SoulSelect
       placeholder="受控模式"
       value={value}
+      style={{width: 300}}
       soul={{
         mode: mode,
         onModeChange: setMode,

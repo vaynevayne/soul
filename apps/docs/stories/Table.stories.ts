@@ -9,6 +9,14 @@ const meta = {
   title: "Components/Table",
   component: SoulTable,
   tags: ["autodocs"],
+
+  parameters: {
+    docs: {
+      description: {
+        component: "https://github.com/nkbt/react-collapse",
+      },
+    },
+  },
   // argTypes: {
   //   backgroundColor: { control: 'color' },
   // },
@@ -18,6 +26,7 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 // More on writing stories with args: https://storybook.js.org/docs/react/writing-stories/args
+
 export const Uncontrolled: Story = {
   args: {
     dataSource,
@@ -54,7 +63,23 @@ export const RowReorder: Story = {
 export const CustomVisibleModal: Story = {
   args: {
     rowKey: "id",
+    dataSource,
+    columns,
+    size: "small",
+  },
+}
 
+export const CollapseTable: Story = {
+  parameters: {
+    docs: {
+      title: "1212",
+      description: {
+        story: "https://github.com/nkbt/react-collapse",
+      },
+    },
+  },
+  args: {
+    rowKey: "id",
     dataSource,
     columns,
     size: "small",

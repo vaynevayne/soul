@@ -10,6 +10,8 @@ export type ColumnState = {
   order?: number
   visible?: boolean
   disabled?: boolean
+  /** */
+  fixed?: TableColumnType<any>["fixed"]
 } & TableColumnType<any>
 
 export type ColumnsState = Record<string, ColumnState>
@@ -23,6 +25,15 @@ export type Meta = {
    */
   disableExcel?: boolean
   /**
+   * 隐藏 setting
+   */
+  disableSetting?: boolean
+
+  /**
+   * 隐藏折叠按钮
+   */
+  disableCollapse?: boolean
+  /**
    * 导出 excel 的默认文件名
    */
   filename?: string
@@ -31,6 +42,7 @@ export type Meta = {
    */
   defaultVisible?: boolean
 
+  collapseOrder?: Record<string, string[]>
   /**
    * 右键菜单, label用做渲染, 其他属性会传到 onContextMenuItemClick 里
    */

@@ -4,28 +4,14 @@ import type {CheckboxChangeEvent} from "antd/es/checkbox"
 import {produce} from "immer"
 import {Dispatch, FC, memo, useContext, useState} from "react"
 import {ColumnsStateContext} from "./context"
-import {ColumnWithState, ColumnsState, Meta} from "./type"
-import {findColKey, getState, getVisible} from "./util"
+import {ColumnWithState, Meta} from "./type"
+import {findColKey, mapStateToColumns} from "./util"
 
 export type SettingModalProps = {
   columns: ColumnWithState[]
   meta: Meta
   setIsOpenedSetting: Dispatch<boolean>
 } & ModalProps
-
-const mapVisibleToColumns = (
-  columns: ColumnWithState[],
-  columnsState: ColumnsState,
-  defaultVisible: boolean
-) => {
-  return columns.map((column) => {
-    return {
-      ...column,
-      visible: !!getVisible(columnsState, defaultVisible)(column),
-      disabled: getState(columnsState, column).disabled,
-    }
-  })
-}
 
 const SettingModal: FC<SettingModalProps> = ({
   columns,
@@ -41,7 +27,7 @@ const SettingModal: FC<SettingModalProps> = ({
    * 搭配 isOpen 创建销毁, 才可以使用 useState 来计算
    */
   const [localColumns, setLocaleColumns] = useState(
-    mapVisibleToColumns(columns, columnsState, !!meta.defaultVisible)
+    mapStateToColumns(columns, columnsState, !!meta.defaultVisible)
   )
 
   const [indeterminate, setIndeterminate] = useState(true)

@@ -1,6 +1,6 @@
 {
   "name": "@soul/core",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -9,6 +9,11 @@
   "files": [
     "dist/**"
   ],
+  "homepage": "https://vaynevayne.github.io/soul/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vaynevayne/soul"
+  },
   "scripts": {
     "build": "tsup src/index.tsx --format esm,cjs --dts --external react",
     "dev": "tsup src/index.tsx --format esm,cjs --watch --dts --external react",
@@ -50,7 +55,8 @@
     "react-resizable": "^3.0.5"
   },
   "dependencies": {
-    "@soul/utils": "workspace:^"
+    "@soul/utils": "workspace:^",
+    "react-collapse": "^5.1.1"
   },
   "tsup": {
     "sourcemap": true

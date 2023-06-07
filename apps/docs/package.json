@@ -10,7 +10,7 @@
     "deploy": "pnpm build && touch ./storybook-static/.nojekyll && gh-pages -d ./storybook-static -t true"
   },
   "dependencies": {
-    "@soul/core": "workspace:0.0.4",
+    "@soul/core": "workspace:0.0.5",
     "mockjs": "^1.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

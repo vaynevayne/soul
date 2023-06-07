@@ -1,5 +1,13 @@
 # @soul/core
 
+## 0.0.5
+
+### Patch Changes
+
+- feat(core): add SettingModal2
+- Updated dependencies
+  - @soul/utils@0.0.5
+
 ## 0.0.4
 
 ### Patch Changes

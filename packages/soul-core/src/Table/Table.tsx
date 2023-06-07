@@ -1,4 +1,9 @@
-import {DownloadOutlined, SettingOutlined} from "@ant-design/icons"
+import {
+  DownOutlined,
+  DownloadOutlined,
+  RightOutlined,
+  SettingOutlined,
+} from "@ant-design/icons"
 import {useUncontrolled, useWatch} from "@soul/utils"
 import {
   TableProps as AntTableProps,
@@ -21,6 +26,7 @@ import {
   useMemo,
   useState,
 } from "react"
+import {Collapse} from "react-collapse"
 import {Item, Menu, useContextMenu} from "react-contexify"
 import "react-contexify/dist/ReactContexify.css"
 import ReactDragListView from "react-drag-listview"
@@ -46,7 +52,12 @@ export type TableProps = {
   /**
    * @description 可以在 column 中传入相关 columnState, 将作为默认值使用
    */
-  columns: SoulTableColumn[]
+  columns: (SoulTableColumn & {
+    /** setting  中的 tab 分类,用作 label */
+    tab: string
+    /** tab  下的 collapse  分组,用作 label */
+    collapse: string[]
+  })[]
 
   defaultColumnsState?: ColumnsState
 
@@ -68,7 +79,7 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
     meta: propMeta,
     dataSource: propDataSource,
     title,
-
+    children,
     rewriteColumns,
     ...tableProps
   },
@@ -103,6 +114,7 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
   const [isOpenedSetting, setIsOpenedSetting] = useState(false)
   // excel modal
   const [isOpenedExcel, setIsOpenedExcel] = useState(false)
+  const [isOpenedCollapse, setIsOpenedCollapse] = useState(true)
 
   // 🔥 you can use this hook from everywhere. All you need is the menu id
   const {show} = useContextMenu({
@@ -131,8 +143,10 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
       columnsState,
       setColumnsState,
       setColumnState,
+      columns,
+      meta,
     }),
-    [columnsState, setColumnsState, setColumnState]
+    [columnsState, setColumnsState, setColumnState, columns, meta]
   )
 
   /** @example { name: 100} */
@@ -219,6 +233,8 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
     [tableColumns]
   )
 
+  console.log("tableColumns", tableColumns)
+
   return (
     <>
       <ColumnsStateContext.Provider value={contextValue}>
@@ -227,14 +243,16 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
           <Col flex="none">
             {meta.toolbar === false ? null : (
               <Space style={{marginBottom: 8, marginLeft: "auto"}}>
-                <Tooltip title="列配置">
-                  <Button
-                    type="text"
-                    onClick={() => setIsOpenedSetting(true)}
-                    size="small"
-                    icon={<SettingOutlined />}
-                  ></Button>
-                </Tooltip>
+                {meta.disableSetting ? null : (
+                  <Tooltip title="列配置">
+                    <Button
+                      type="text"
+                      onClick={() => setIsOpenedSetting(true)}
+                      size="small"
+                      icon={<SettingOutlined />}
+                    ></Button>
+                  </Tooltip>
+                )}
 
                 {meta.disableExcel ? null : (
                   <Tooltip title="导出excel">
@@ -248,37 +266,52 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
                 )}
 
                 {meta.toolbar}
+                {meta.disableCollapse ? null : (
+                  <Tooltip title={isOpenedCollapse ? "收起" : "展开"}>
+                    <Button
+                      type="text"
+                      onClick={() => setIsOpenedCollapse((o) => !o)}
+                      size="small"
+                      icon={
+                        isOpenedCollapse ? <DownOutlined /> : <RightOutlined />
+                      }
+                    ></Button>
+                  </Tooltip>
+                )}
               </Space>
             )}
           </Col>
         </Row>
 
-        <ReactDragListView.DragColumn {...dragProps}>
-          <ReactDragListView {...dragRowProps}>
-            <Table
-              columns={rewriteColumns?.(tableColumns) || tableColumns}
-              {...(meta.contextMenus && {
-                onRow: (record) => {
-                  return {
-                    onContextMenu: (event) => {
-                      show({
-                        event,
-                        props: record,
-                      })
-                    },
-                  }
-                },
-              })}
-              components={{
-                header: {
-                  cell: ResizeableTitle,
-                },
-              }}
-              dataSource={dataSource}
-              {...tableProps}
-            />
-          </ReactDragListView>
-        </ReactDragListView.DragColumn>
+        <Collapse isOpened={isOpenedCollapse}>
+          <ReactDragListView.DragColumn {...dragProps}>
+            <ReactDragListView {...dragRowProps}>
+              <Table
+                columns={rewriteColumns?.(tableColumns) || tableColumns}
+                {...(meta.contextMenus && {
+                  onRow: (record) => {
+                    return {
+                      onContextMenu: (event) => {
+                        show({
+                          event,
+                          props: record,
+                        })
+                      },
+                    }
+                  },
+                })}
+                components={{
+                  header: {
+                    cell: ResizeableTitle,
+                  },
+                }}
+                dataSource={dataSource}
+                {...tableProps}
+              />
+            </ReactDragListView>
+          </ReactDragListView.DragColumn>
+          {children}
+        </Collapse>
 
         {
           // 列设置

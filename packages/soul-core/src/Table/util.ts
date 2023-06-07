@@ -12,11 +12,11 @@ export const findColKey = (column: TableColumnType<any>) => {
 
   if (!key && !dataIndex) {
     console.warn(
-      `[@soul/components:Table],错误: 请为列 ${JSON.stringify(
+      `[@soul/components:Table],错误: 请补充 key 或 dataIndex, 否则该列无法正常使用,列 ${JSON.stringify(
         column,
         null,
         2
-      )} 补充 key 或 dataIndex, 否则该列无法正常使用`
+      )} `
     )
     return ""
   }
@@ -57,3 +57,17 @@ export const getVisible =
 /** 先 sort 再 filter */
 export const getState = (columnsState: ColumnsState, column: ColumnWithState) =>
   columnsState[findColKey(column)] || {}
+
+export const mapStateToColumns = (
+  columns: ColumnWithState[],
+  columnsState: ColumnsState,
+  defaultVisible: boolean
+) => {
+  return columns.map((column) => {
+    return {
+      ...column,
+      ...getState(columnsState, column),
+      visible: !!getVisible(columnsState, defaultVisible)(column),
+    }
+  })
+}
