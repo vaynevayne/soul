@@ -37,8 +37,6 @@ const SettingModal2: FC<SettingModal2Props> = ({
     return mapStateToColumns(columns, columnsState, !!meta.defaultVisible)
   }, [columns, columnsState, meta.defaultVisible])
 
-  console.log("radioGroup", radioGroup)
-
   /**
    * 当checkbox  点击时
    * @param list
@@ -236,7 +234,6 @@ const SettingModal2: FC<SettingModal2Props> = ({
               className="mt-1"
               onClick={(e) => {
                 e.preventDefault()
-                console.log("...")
 
                 setColumnsState(
                   produce(columnsState, (draft) => {

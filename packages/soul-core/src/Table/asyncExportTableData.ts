@@ -44,30 +44,40 @@ const textToNum = (input: any, dataIndex) => {
       // 兼容一下 百分号
       output = Number(input.replace("%", "")) / 100
 
-      columnMftMap.set(dataIndex, "rate")
+      // 后面的 '' 值会把前面的类型给覆盖,比如 '%列', 因为最后一个是'', 就导致百分号失效
+      if (!columnMftMap.has(dataIndex)) {
+        columnMftMap.set(dataIndex, "rate")
+      }
     } else if (
       // 判断是否数字类型字符串, 或者千分号字符串
       String(Number(input)) === input ||
       /^-?\d{1,3}(,\d{3})*(\.\d{1,2})?$/.test(input)
     ) {
       output = numeral(input).value()
-
-      columnMftMap.set(dataIndex, "int")
+      if (!columnMftMap.has(dataIndex)) {
+        columnMftMap.set(dataIndex, "int")
+      }
     } else {
       // 字符串
       output = input
-      columnMftMap.set(dataIndex, "string")
+      if (!columnMftMap.has(dataIndex)) {
+        columnMftMap.set(dataIndex, "string")
+      }
     }
   } else if (typeof input === "number") {
     output = input
-    columnMftMap.set(dataIndex, "int")
+    if (!columnMftMap.has(dataIndex)) {
+      columnMftMap.set(dataIndex, "int")
+    }
   } else if (
     typeof input === "object" &&
     input !== null &&
     Object.hasOwn(input, "value")
   ) {
     output = input?.value
-    columnMftMap.set(dataIndex, "int")
+    if (!columnMftMap.has(dataIndex)) {
+      columnMftMap.set(dataIndex, "int")
+    }
   } else {
     console.warn("[SoulTable]:textToNum未知类型", input, dataIndex)
   }

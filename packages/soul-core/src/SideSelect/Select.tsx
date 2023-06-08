@@ -218,7 +218,6 @@ const Select = ({soul = {}, value, onChange, ...other}: SelectProps) => {
         }}
         onCancel={() => {
           setLabelOpen(false)
-          console.log("onCancel")
         }}
         zIndex={1051}
       >

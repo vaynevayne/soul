@@ -16,7 +16,11 @@ import "react-resizable/css/styles.css"
 发布到 npm 步骤:
 
 - pnpm run changeset // 修改 changeset.md
-  - 不要选 major minor, 让系统默认选择 patch
+  1.  changed & unchanged enter
+  2.  major 不选 enter
+  3.  minor 不选 enter
+  4.  Summary 随便写
+  5.  desired changeset ? true
 - pnpm run version-packages // 修改 package.json 的 version
 - pnpm install // 修改 lock 文件
 - git add .

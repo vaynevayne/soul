@@ -233,8 +233,6 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
     [tableColumns]
   )
 
-  console.log("tableColumns", tableColumns)
-
   return (
     <>
       <ColumnsStateContext.Provider value={contextValue}>
