@@ -2,13 +2,14 @@ import {DeleteOutlined, PlusOutlined} from "@ant-design/icons"
 import {useUncontrolled} from "@soul/utils"
 import {
   Select as AntSelect,
-  SelectProps as AntSelectProps,
   Button,
   Checkbox,
   Divider,
   Space,
   Tooltip,
 } from "antd"
+import {isEmpty} from "lodash-es"
+import {ForwardRefRenderFunction, forwardRef} from "react"
 
 // 不需要传匹配
 const defaultModeList: Array<{
@@ -43,7 +44,7 @@ export type Preset = {
   [index: string]: any
 }
 
-export type SelectProps = AntSelectProps & {
+export type SelectProps = {
   soul?: {
     defaultMode?: Mode
     optionsWidth?: number
@@ -60,9 +61,12 @@ export type SelectProps = AntSelectProps & {
     onDeletePreset?: (val: Preset) => void
     onAddPreset?: (params: Preset) => void
   }
-}
+} & any
 
-const Select = ({soul = {}, value, onChange, ...other}: SelectProps) => {
+const Select: ForwardRefRenderFunction<typeof AntSelect, SelectProps> = (
+  {soul = {}, value, onChange, ...other},
+  ref
+) => {
   const {
     defaultMode = "whereIn",
     mode: propMode,
@@ -90,6 +94,7 @@ const Select = ({soul = {}, value, onChange, ...other}: SelectProps) => {
   return (
     <>
       <AntSelect
+        ref={ref}
         mode={["like", "notLike"].includes(mode) ? "tags" : "multiple"}
         maxTagCount={"responsive"}
         allowClear
@@ -98,7 +103,7 @@ const Select = ({soul = {}, value, onChange, ...other}: SelectProps) => {
         suffixIcon={
           <span>{modeList.find((it) => it.value === mode)?.label}</span>
         }
-        dropdownRender={(menu) => (
+        dropdownRender={(menu: any) => (
           <div>
             <div
               style={{
@@ -109,64 +114,72 @@ const Select = ({soul = {}, value, onChange, ...other}: SelectProps) => {
                 e.stopPropagation()
               }}
             >
-              <div style={{flexBasis: optionsWidth}}>{menu}</div>
               <div
                 style={{
-                  flex: "none",
-
-                  flexBasis: presetsWidth,
-                  // maxWidth: "20%",
-                  display: "flex",
-                  // overflow: "scroll",
-                  borderInlineStart: "1px solid rgba(5, 5, 5, 0.06)",
-                  flexDirection: "column",
+                  flex: 1,
+                  flexBasis: optionsWidth ?? "unset",
                 }}
               >
+                {menu}
+              </div>
+              {isEmpty(presets) ? null : (
                 <div
                   style={{
+                    flex: "none",
+                    flexBasis: presetsWidth,
+                    // maxWidth: "20%",
                     display: "flex",
-                    flex: 1, // 让按钮全宽
+                    // overflow: "scroll",
+                    borderInlineStart: "1px solid rgba(5, 5, 5, 0.06)",
                     flexDirection: "column",
                   }}
                 >
-                  {presets?.map((preset) => (
-                    <Button
-                      type="text"
-                      key={preset.label}
-                      size={"small"}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                      }}
-                      onMouseDown={(e) => {
-                        e.preventDefault()
-                        e.stopPropagation()
-                      }}
-                      onClick={() => onPresetClick(preset)}
-                    >
-                      <span
+                  <div
+                    style={{
+                      display: "flex",
+                      flex: 1, // 让按钮全宽
+                      flexDirection: "column",
+                    }}
+                  >
+                    {presets?.map((preset) => (
+                      <Button
+                        type="text"
+                        key={preset.label}
+                        size={"small"}
                         style={{
-                          flex: 1,
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
                         }}
-                      >
-                        {preset.label}
-                      </span>
-
-                      <DeleteOutlined
-                        onClick={(e) => {
-                          e.stopPropagation()
+                        onMouseDown={(e) => {
                           e.preventDefault()
-                          onDeletePreset(preset)
+                          e.stopPropagation()
                         }}
-                      />
-                    </Button>
-                  ))}
+                        onClick={() => onPresetClick(preset)}
+                      >
+                        <span
+                          style={{
+                            flex: 1,
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {preset.label}
+                        </span>
+
+                        <DeleteOutlined
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            e.preventDefault()
+                            onDeletePreset(preset)
+                          }}
+                        />
+                      </Button>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
             <Divider style={{margin: "4px 0"}} />
             <Space wrap>
@@ -209,27 +222,8 @@ const Select = ({soul = {}, value, onChange, ...other}: SelectProps) => {
         )}
         {...other}
       />
-      {/* <Modal
-        title="Title"
-        open={isLabelOpen}
-        onOk={async () => {
-          await onAddPreset()
-          setLabelOpen(false)
-        }}
-        onCancel={() => {
-          setLabelOpen(false)
-        }}
-        zIndex={1051}
-      >
-        <Input
-          size="small"
-          placeholder="添加预设"
-          value={label}
-          onChange={(e) => setLabel(e.target.value)}
-        />
-      </Modal> */}
     </>
   )
 }
-
-export default Select
+const ForwardSelect = forwardRef(Select)
+export default ForwardSelect

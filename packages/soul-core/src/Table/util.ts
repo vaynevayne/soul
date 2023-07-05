@@ -30,10 +30,16 @@ export const getSorter =
     const stateA = columnsState[findColKey(columnA)] || {}
     const stateB = columnsState[findColKey(columnB)] || {}
 
-    return (
-      (stateA.order || columnA.order || 0) -
-      (stateB.order || columnB.order || 0)
-    )
+    // 当都是 leftColumns  | centerColumns时,比较 order,
+    if (Boolean(stateA.fixed) === Boolean(stateB.fixed)) {
+      return (
+        (stateA.order || columnA.order || 0) -
+        (stateB.order || columnB.order || 0)
+      )
+    } else {
+      // 当不同时, left 总是在左边 center
+      return stateA.fixed === "left" ? -1 : 1
+    }
   }
 
 /** 先 sort 再 filter */
@@ -70,4 +76,19 @@ export const mapStateToColumns = (
       visible: !!getVisible(columnsState, defaultVisible)(column),
     }
   })
+}
+
+export const findMaxOrder = (columnsState: ColumnsState) => {
+  let maxFixedOrder = 0
+  let maxCenterOrder = 0
+
+  Object.entries(columnsState).forEach(([_, state]) => {
+    if (state.fixed === "left") {
+      maxFixedOrder = Math.max(maxFixedOrder, state.order || 0)
+    } else {
+      maxCenterOrder = Math.max(maxCenterOrder, state.order || 0)
+    }
+  })
+
+  return [maxFixedOrder, maxCenterOrder]
 }

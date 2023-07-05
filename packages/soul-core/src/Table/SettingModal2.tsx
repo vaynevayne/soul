@@ -10,8 +10,6 @@ import {ColumnsStateContext} from "./context"
 import {ColumnWithState} from "./type"
 import {findColKey, getSorter, mapStateToColumns} from "./util"
 
-const START_ORDER = 1000
-
 // 所有 collapse 数组的去重
 const getCollapseLabels = (tabColumns: any[]): string[] => [
   ...new Set(tabColumns.map((item) => item.collapse).flat()),
@@ -36,27 +34,6 @@ const SettingModal2: FC<SettingModal2Props> = ({
   const localColumns = useMemo(() => {
     return mapStateToColumns(columns, columnsState, !!meta.defaultVisible)
   }, [columns, columnsState, meta.defaultVisible])
-
-  /**
-   * 当checkbox  点击时
-   * @param list
-   */
-  const setLocaleColumns = (list) => {
-    const newColumnsState = produce(columnsState, (draft) => {
-      list.forEach((column) => {
-        const colKey = findColKey(column)
-
-        draft[colKey] = {
-          ...draft[colKey],
-          visible: column.visible,
-          fixed: column.tab === "维度" ? "left" : false, // 受控模式, 实时修改 table, 所以需要放入
-          order: column.tab === "维度" ? 0 : START_ORDER,
-        }
-      })
-    })
-
-    setColumnsState(newColumnsState)
-  }
 
   // 从 columnsState  派生状态
 
@@ -139,6 +116,7 @@ const SettingModal2: FC<SettingModal2Props> = ({
     nodeSelector: ".li",
     handleSelector: ".handle",
   }
+
   return (
     <Modal
       width={800}
@@ -162,7 +140,7 @@ const SettingModal2: FC<SettingModal2Props> = ({
             }}
           />
           <Tabs
-            defaultActiveKey="1"
+            defaultActiveKey="指标"
             type="card"
             size={"small"}
             items={Object.entries(groupBy(localColumns, "tab")).map(
@@ -181,7 +159,6 @@ const SettingModal2: FC<SettingModal2Props> = ({
                       size={16}
                       style={{width: "100%"}}
                     >
-                      {}
                       {getCollapseLabels(tabColumns)
                         .sort((a, b) =>
                           meta.collapseOrder?.[tab]
@@ -195,7 +172,7 @@ const SettingModal2: FC<SettingModal2Props> = ({
                             key={label}
                             localColumns={localColumns}
                             radioGroup={radioGroup}
-                            columns={tabColumns
+                            chunkColumns={tabColumns
                               .filter((col) => col.collapse.includes(label))
                               .filter((col) =>
                                 typeof col.title === "function"
@@ -205,7 +182,6 @@ const SettingModal2: FC<SettingModal2Props> = ({
                                   : String(col.title).includes(searchValue) ||
                                     String(col.dataIndex).includes(searchValue)
                               )}
-                            setLocaleColumns={setLocaleColumns}
                           ></CheckAllSection>
                         ))}
                     </Space>

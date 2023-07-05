@@ -241,6 +241,7 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
           <Col flex="none">
             {meta.toolbar === false ? null : (
               <Space style={{marginBottom: 8, marginLeft: "auto"}}>
+                {meta.toolbar}
                 {meta.disableSetting ? null : (
                   <Tooltip title="列配置">
                     <Button
@@ -263,7 +264,6 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
                   </Tooltip>
                 )}
 
-                {meta.toolbar}
                 {meta.disableCollapse ? null : (
                   <Tooltip title={isOpenedCollapse ? "收起" : "展开"}>
                     <Button
@@ -286,18 +286,20 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
             <ReactDragListView {...dragRowProps}>
               <Table
                 columns={rewriteColumns?.(tableColumns) || tableColumns}
-                {...(meta.contextMenus && {
-                  onRow: (record) => {
-                    return {
-                      onContextMenu: (event) => {
-                        show({
-                          event,
-                          props: record,
-                        })
+                {...(meta.contextMenus && meta.contextMenus.length > 0
+                  ? {
+                      onRow: (record) => {
+                        return {
+                          onContextMenu: (event) => {
+                            show({
+                              event,
+                              props: record,
+                            })
+                          },
+                        }
                       },
                     }
-                  },
-                })}
+                  : null)}
                 components={{
                   header: {
                     cell: ResizeableTitle,
@@ -337,7 +339,7 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
         }
 
         {/* 右键菜单 */}
-        {meta.contextMenus?.length && (
+        {meta.contextMenus?.length ? (
           <Menu id={MENU_ID}>
             {meta.contextMenus.map((item, index) => (
               <Item
@@ -349,7 +351,7 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
               </Item>
             ))}
           </Menu>
-        )}
+        ) : null}
       </ColumnsStateContext.Provider>
     </>
   )

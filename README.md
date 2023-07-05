@@ -13,6 +13,13 @@ import "react-contexify/dist/ReactContexify.css"
 import "react-resizable/css/styles.css"
 ```
 
+完成后的总结:
+
+- 应该将这个带有 order ,函数(透传给 table)等的全量数组作为 allColumns(唯一目的是提供 render 函数) + 剔除函数之外的 allColumns(剔除函数以便作为 state 存储,回显) 来传给 SettingModal,
+- 而不是直接使用 table 的 columns + State, 因为 State 是残缺的, 导致 column 上有的,State 可能没有, 设置属性时,不能使用. 读取 order 时,没有 order, 给 order 一个默认值也很难, 不如直接在配置表里指定默认值
+- 无论使用数组还是对象作为 State, 得是全量的
+- 结论: State 得是 数组 全量 内部直接受控非受控使用, 至于权限, 再传入 Modal 时过滤就行
+
 发布到 npm 步骤:
 
 - pnpm run changeset // 修改 changeset.md

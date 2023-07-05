@@ -7,7 +7,6 @@ import {
 import {useUncontrolled} from "@soul/utils"
 import {
   Select as AntSelect,
-  SelectProps as AntSelectProps,
   Button,
   Checkbox,
   Divider,
@@ -57,7 +56,7 @@ type Preset = {
   mode: Mode
   [index: string]: any
 }
-export type SelectProps = AntSelectProps & {
+export type SelectProps = any & {
   soul?: {
     defaultMode?: Mode
     mode?: Mode

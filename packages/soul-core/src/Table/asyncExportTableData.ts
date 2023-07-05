@@ -37,11 +37,19 @@ export const getValueByDataIndex = (data, columns) => {
   return resTable
 }
 
-const textToNum = (input: any, dataIndex) => {
+/**
+ *
+ * @param input  {value,color}, day1
+ * @param dataIndex
+ * @returns
+ * 感觉不会 是 obj 类型, 因为 day1:{value:''} 被改成了 day1.value
+ */
+const textToNum = (input: any, dataIndex: string) => {
   let output = undefined as any
   if (typeof input === "string") {
     if (input.endsWith("%")) {
       // 兼容一下 百分号
+      //  '10%' => 0.01 rate
       output = Number(input.replace("%", "")) / 100
 
       // 后面的 '' 值会把前面的类型给覆盖,比如 '%列', 因为最后一个是'', 就导致百分号失效
@@ -55,12 +63,13 @@ const textToNum = (input: any, dataIndex) => {
     ) {
       output = numeral(input).value()
       if (!columnMftMap.has(dataIndex)) {
+        // 没有才会加, 第一行是* 后面变成 %, 那么就还是*
         columnMftMap.set(dataIndex, "int")
       }
     } else {
-      // 字符串
+      // 字符串 需要忽略 '*' '-' 等字符串
       output = input
-      if (!columnMftMap.has(dataIndex)) {
+      if (!columnMftMap.has(dataIndex) && !["*", "_"].includes(input)) {
         columnMftMap.set(dataIndex, "string")
       }
     }
@@ -75,10 +84,12 @@ const textToNum = (input: any, dataIndex) => {
     Object.hasOwn(input, "value")
   ) {
     output = input?.value
+
     if (!columnMftMap.has(dataIndex)) {
       columnMftMap.set(dataIndex, "int")
     }
   } else {
+    output = String(input)
     console.warn("[SoulTable]:textToNum未知类型", input, dataIndex)
   }
 
@@ -126,26 +137,27 @@ function exportExcel(Excel, tableColumns, tableData, lines, fileName) {
   // 注意：这些列结构只是工作簿构建方便，
   // 除了列宽之外，它们不会完全持久化。
 
-  worksheet.columns = tableColumns.map((column) => ({
-    dataIndex: column.dataIndex,
-    header: column.title,
-    key: column.dataIndex,
-    width: (column.width || 100) / 7,
-    height: 70,
-    style: {
-      font: {
-        size: 12,
-        bold: true,
+  worksheet.columns = tableColumns.map((column) => {
+    return {
+      dataIndex: column.dataIndex,
+      header: column.title,
+      key: column.dataIndex,
+      width: (column.width || 100) / 7,
+      height: 70,
+      style: {
+        font: {
+          size: 12,
+          bold: true,
+        },
+        alignment: {
+          vertical: "middle",
+          // horizontal: column.oldType === "string" ? "left" : "right",
+        },
+        numFmt:
+          formatMap[columnMftMap.get(column.dataIndex.toString())] || "General",
       },
-      alignment: {
-        vertical: "middle",
-        // horizontal: column.oldType === "string" ? "left" : "right",
-      },
-      numFmt: Array.isArray(column.dataIndex)
-        ? formatMap[columnMftMap.get(column.dataIndex[0])]
-        : formatMap[columnMftMap.get(column.dataIndex)] || "General",
-    },
-  }))
+    }
+  })
 
   // 冻结表格
   const ySplit = tableData.filter((item) => item.total_row).length + 1
@@ -200,7 +212,10 @@ async function asyncExportTableData(tableColumns, tableData, fileName) {
   if (isEmpty(tableData)) {
     return
   }
+
   const Excel = await import("exceljs")
+
+  // day1,value : 0.1005
   const formatted = excelTableFormatted(
     getValueByDataIndex(tableData, tableColumns)
   )

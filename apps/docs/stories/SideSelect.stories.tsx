@@ -25,6 +25,7 @@ type Story = StoryObj<typeof SoulSideSelect>
 const UnControlled = ({...rest}) => {
   const [value, setValue] = useState([])
   console.log("value", value)
+  const [mode, setMode] = useState("whereIn")
 
   let storeKey = "preset_country"
   return (
@@ -34,24 +35,30 @@ const UnControlled = ({...rest}) => {
       popupMatchSelectWidth={400}
       onChange={setValue}
       soul={{
-        defaultMode: "whereIn",
-        onModeChange: (mode) => {
-          console.log("mode", mode)
+        modeList: [
+          {
+            label: "反选",
+            value: "whereNotIn",
+          },
+        ],
+        optionsWidth: 100,
+        presetsWidth: 100,
+        mode: mode,
+        onModeChange: (mode) => setMode(mode),
+        presets: JSON.parse(localStorage.getItem(storeKey) || "[]"),
+        onAddPreset: async (preset) => {
+          console.log("addPreset", preset)
+
+          const list = JSON.parse(localStorage.getItem(storeKey) || "[]")
+          localStorage.setItem(storeKey, JSON.stringify(list.concat(preset)))
         },
-        getPresets: () => JSON.parse(localStorage.getItem(storeKey) || "[]"),
-        deletePreset: async (val) => {
+        onDeletePreset: async (val) => {
           const list = JSON.parse(localStorage.getItem(storeKey) || "[]")
 
           localStorage.setItem(
             storeKey,
             JSON.stringify(list.filter((item) => item.label !== val.label))
           )
-        },
-        addPreset: async (preset) => {
-          console.log("addPreset", preset)
-
-          const list = JSON.parse(localStorage.getItem(storeKey) || "[]")
-          localStorage.setItem(storeKey, JSON.stringify(list.concat(preset)))
         },
       }}
       {...rest}
@@ -101,31 +108,16 @@ const Controlled = ({...rest}) => {
         setValue?.(rest[0])
       }}
       soul={{
-        modeList: undefined,
+        modeList: [],
         optionsWidth: 300,
         presetsWidth: 100,
         mode: mode,
         onModeChange: (nextMode) => {
-          if (value?.length > 1 && ["like", "notLike"].includes(nextMode)) {
-            alert("只支持单选like,notLike")
-            return
-          }
           setMode(nextMode)
         },
-        // [{label: "a", value: "a", mode: "whereIn"}]
-        presets: JSON.parse(localStorage.getItem(storeKey) || "[]"),
-        onAddPreset: (preset) => {
-          const list = JSON.parse(localStorage.getItem(storeKey) || "[]")
-          localStorage.setItem(storeKey, JSON.stringify(list.concat(preset)))
-        },
-        onDeletePreset: (preset) => {
-          const list = JSON.parse(localStorage.getItem(storeKey) || "[]")
-
-          localStorage.setItem(
-            storeKey,
-            JSON.stringify(list.filter((item) => item.label !== preset.label))
-          )
-        },
+        presets: [],
+        onAddPreset: () => {},
+        onDeletePreset: () => {},
       }}
     />
   )
