@@ -215,11 +215,17 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
 
   const dragRowProps = {
     onDragEnd(fromIndex, toIndex) {
-      const moved = arrayMoveImmutable<any>(dataSource, fromIndex, toIndex)
+      const bugRow = document.querySelector(".ant-table-measure-row")
+
+      const first = bugRow ? fromIndex - 1 : fromIndex
+      const to = bugRow ? toIndex - 1 : toIndex
+
+      const moved = arrayMoveImmutable<any>(dataSource, first, to)
+
       setDateSource(moved)
     },
     handleSelector: ".drag-icon",
-    // nodeSelector: 'tr.ant-table-row',
+    nodeSelector: "tr.ant-table-row",
   }
 
   useImperativeHandle(

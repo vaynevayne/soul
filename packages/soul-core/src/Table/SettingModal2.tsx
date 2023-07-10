@@ -3,7 +3,7 @@ import {Col, Divider, Input, Modal, ModalProps, Row, Space, Tabs} from "antd"
 import {arrayMoveImmutable} from "array-move"
 import {produce} from "immer"
 import {groupBy, omit} from "lodash-es"
-import {FC, memo, useContext, useMemo, useState} from "react"
+import {FC, memo, useContext, useEffect, useMemo, useState} from "react"
 import ReactDragListView from "react-drag-listview"
 import CheckAllSection from "./CheckAllSection"
 import {ColumnsStateContext} from "./context"
@@ -26,8 +26,15 @@ const SettingModal2: FC<SettingModal2Props> = ({
   onOpenChange,
   radioGroup,
 }) => {
-  const {columnsState, setColumnsState, columns, meta} =
-    useContext(ColumnsStateContext)
+  const {columns, meta, ...context} = useContext(ColumnsStateContext)
+
+  const [columnsState, setColumnsState] = useState(context.columnsState)
+
+  useEffect(() => {
+    if (open) {
+      setColumnsState(context.columnsState)
+    }
+  }, [context.columnsState, open])
 
   const [searchValue, setSearchValue] = useState("")
 
@@ -65,7 +72,7 @@ const SettingModal2: FC<SettingModal2Props> = ({
 
   const onOk = async () => {
     await meta?.settingModalProps?.onOk?.(columnsState)
-
+    context.setColumnsState(columnsState)
     onOpenChange(false)
   }
 
@@ -170,7 +177,8 @@ const SettingModal2: FC<SettingModal2Props> = ({
                           <CheckAllSection
                             label={label}
                             key={label}
-                            localColumns={localColumns}
+                            columnsState={columnsState}
+                            setColumnsState={setColumnsState}
                             radioGroup={radioGroup}
                             chunkColumns={tabColumns
                               .filter((col) => col.collapse.includes(label))

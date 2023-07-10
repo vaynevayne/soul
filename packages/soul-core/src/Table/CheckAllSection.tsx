@@ -1,18 +1,17 @@
 import {Checkbox, Col, Divider, Row} from "antd"
 import type {CheckboxChangeEvent} from "antd/es/checkbox"
 import {produce} from "immer"
-import {FC, useContext, useEffect, useState} from "react"
-import {ColumnsStateContext} from "./context"
+import {FC, useEffect, useState} from "react"
 import {findColKey, findMaxOrder} from "./util"
 
 // TODO radio group
 const CheckAllSection: FC<any> = ({
   label,
   chunkColumns,
-  localColumns,
   radioGroup,
+  columnsState,
+  setColumnsState,
 }) => {
-  const {columnsState, setColumnsState} = useContext(ColumnsStateContext)
   const [indeterminate, setIndeterminate] = useState(true)
   const [checkAll, setCheckAll] = useState(false)
 
@@ -51,17 +50,6 @@ const CheckAllSection: FC<any> = ({
         })
       })
     )
-
-    // setLocaleColumns(
-    //   produce(localColumns, (draft) => {
-    //     chunkColumns.forEach((col) => {
-    //       const idx = localColumns.findIndex(
-    //         (item) => findColKey(item) === findColKey(col)
-    //       )
-    //       draft[idx].visible = e.target.checked
-    //     })
-    //   })
-    // )
   }
 
   return (
@@ -116,23 +104,6 @@ const CheckAllSection: FC<any> = ({
                     }
                   })
                 )
-                // setLocaleColumns(
-                //   produce(localColumns, (draft) => {
-                //     // 有互斥配置,且被包含 & 点击勾选
-                //     if (radioGroup && radioGroup.includes(colKey) && checked) {
-                //       // 全部改为 false, 包含当前
-                //       radioGroup.forEach((radioKey) => {
-                //         const idx = localColumns.findIndex(
-                //           (item) => findColKey(item) === radioKey
-                //         )
-                //         draft[idx].visible = false
-                //       })
-                //     }
-                //     // 更新当前的状态
-                //     draft[index].visible = checked
-
-                //   })
-                // )
               }}
             >
               {typeof col.title === "function" ? col.title({}) : col.title}

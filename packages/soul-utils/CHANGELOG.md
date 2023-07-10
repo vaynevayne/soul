@@ -1,5 +1,11 @@
 # @soul/utils
 
+## 0.0.9
+
+### Patch Changes
+
+- feat(Table): row drag
+
 ## 0.0.8
 
 ### Patch Changes
