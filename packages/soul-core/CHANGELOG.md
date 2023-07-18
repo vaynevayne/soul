@@ -1,5 +1,13 @@
 # @soul/core
 
+## 0.0.10
+
+### Patch Changes
+
+- 随便
+- Updated dependencies
+  - @soul/utils@0.0.10
+
 ## 0.0.9
 
 ### Patch Changes

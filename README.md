@@ -23,9 +23,9 @@ import "react-resizable/css/styles.css"
 发布到 npm 步骤:
 
 - pnpm run changeset // 修改 changeset.md
-  1.  changed & unchanged enter
-  2.  major 不选 enter
-  3.  minor 不选 enter
+  1.  全选 changed & unchanged enter
+  2.  不选 enter major
+  3.  不选 enter minor
   4.  Summary 随便写
   5.  desired changeset ? true
 - pnpm run version-packages // 修改 package.json 的 version
@@ -36,6 +36,10 @@ import "react-resizable/css/styles.css"
 - 通过 github action 自动发布到 npm
 
 业务项目
+pnpm remove @soul/core @soul/utils
+pnpm link ~/wmqj/soul/packages/soul-core
+pnpm link ~/wmqj/soul/packages/soul-utils
+
 pnpm unlink ~/wmqj/soul/packages/soul-core
 pnpm unlink ~/wmqj/soul/packages/soul-utils
 pnpm add @soul/core @soul/utils

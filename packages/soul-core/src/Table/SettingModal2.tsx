@@ -71,8 +71,8 @@ const SettingModal2: FC<SettingModal2Props> = ({
   }, [columns, columnsState, meta.defaultVisible])
 
   const onOk = async () => {
-    await meta?.settingModalProps?.onOk?.(columnsState)
-    context.setColumnsState(columnsState)
+    await meta?.settingModalProps?.onOk?.(columnsState) // 由onOk 来修改
+    // context.setColumnsState(columnsState)
     onOpenChange(false)
   }
 

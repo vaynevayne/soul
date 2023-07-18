@@ -1,5 +1,11 @@
 # @soul/utils
 
+## 0.0.10
+
+### Patch Changes
+
+- 随便
+
 ## 0.0.9
 
 ### Patch Changes
