@@ -89,7 +89,7 @@ const textToNum = (input: any, dataIndex: string) => {
       columnMftMap.set(dataIndex, "int")
     }
   } else {
-    output = String(input)
+    output = String(input || "")
     console.warn("[SoulTable]:textToNum未知类型", input, dataIndex)
   }
 
