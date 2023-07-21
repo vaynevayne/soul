@@ -202,7 +202,7 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
           const colKey = findColKey(col)
           draft[colKey] = {
             ...draft[colKey],
-            order: idx,
+            order: colKey === "drag" ? -1 : idx, // 让 drag 列总是位于第一列
           }
         })
       })
