@@ -335,7 +335,7 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
           // 导出 excel
           isOpenedExcel && (
             <ExcelModal
-              columns={tableColumns}
+              columns={rewriteColumns?.(tableColumns) || tableColumns}
               dataSource={dataSource}
               open={isOpenedExcel}
               setIsOpenedExcel={setIsOpenedExcel}

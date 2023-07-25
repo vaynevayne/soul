@@ -12,7 +12,7 @@ const formatMap = {
   int: "0.00",
   string: "@",
 }
-const columnMftMap = new Map()
+let columnMftMap = new Map()
 
 // 根据结尾是否带有rate 来加 %
 // 只支持一层结构, 不支持.value
@@ -212,6 +212,7 @@ async function asyncExportTableData(tableColumns, tableData, fileName) {
   if (isEmpty(tableData)) {
     return
   }
+  columnMftMap.clear()
 
   const Excel = await import("exceljs")
 
@@ -221,6 +222,7 @@ async function asyncExportTableData(tableColumns, tableData, fileName) {
   )
 
   exportExcel(Excel, tableColumns, formatted, formatted, fileName)
+  columnMftMap.clear()
 }
 
 export {asyncExportTableData}
