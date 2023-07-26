@@ -1,5 +1,11 @@
 # @soul/utils
 
+## 0.0.14
+
+### Patch Changes
+
+- 121
+
 ## 0.0.13
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @soul/tsconfig
 
+## 0.0.13
+
+### Patch Changes
+
+- 121
+
 ## 0.0.12
 
 ### Patch Changes

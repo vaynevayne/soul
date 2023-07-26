@@ -242,7 +242,7 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
   return (
     <>
       <ColumnsStateContext.Provider value={contextValue}>
-        <Row wrap={false}>
+        <Row>
           <Col flex={1}>{title?.(dataSource)}</Col>
           <Col flex="none">
             {meta.toolbar === false ? null : (
