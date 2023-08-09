@@ -1,5 +1,13 @@
 # @soul/core
 
+## 0.0.15
+
+### Patch Changes
+
+- sas
+- Updated dependencies
+  - @soul/utils@0.0.15
+
 ## 0.0.14
 
 ### Patch Changes

@@ -70,8 +70,8 @@ const SettingModal2: FC<SettingModal2Props> = ({
       }))
   }, [columns, columnsState, meta.defaultVisible])
 
-  const onOk = async () => {
-    await meta?.settingModalProps?.onOk?.(columnsState) // 由onOk 来修改
+  const onOk = () => {
+    meta?.settingModalProps?.onOk?.(columnsState) // 由onOk 来修改
     // context.setColumnsState(columnsState)
     onOpenChange(false)
   }
@@ -122,6 +122,8 @@ const SettingModal2: FC<SettingModal2Props> = ({
     },
     nodeSelector: ".li",
     handleSelector: ".handle",
+    // scrollSpeed: 200,
+    enableScroll: false,
   }
 
   return (
