@@ -1,14 +1,12 @@
 import {CloseOutlined, MenuOutlined, SearchOutlined} from "@ant-design/icons"
 import {Col, Divider, Input, Modal, ModalProps, Row, Space, Tabs} from "antd"
-import {arrayMoveImmutable} from "array-move"
 import {produce} from "immer"
 import {groupBy, omit} from "lodash-es"
 import {FC, memo, useContext, useEffect, useMemo, useState} from "react"
-import ReactDragListView from "react-drag-listview"
 import CheckAllSection from "./CheckAllSection"
 import {ColumnsStateContext} from "./context"
-import {ColumnWithState} from "./type"
 import {findColKey, getSorter, mapStateToColumns} from "./util"
+import {SortableList} from "../SortableList"
 
 // 所有 collapse 数组的去重
 const getCollapseLabels = (tabColumns: any[]): string[] => [
@@ -44,86 +42,40 @@ const SettingModal2: FC<SettingModal2Props> = ({
 
   // 从 columnsState  派生状态
 
-  const leftColumns = useMemo(() => {
-    return mapStateToColumns(columns, columnsState, !!meta.defaultVisible)
-      .sort(getSorter(columnsState))
+  const leftColumns = mapStateToColumns(
+    columns,
+    columnsState,
+    !!meta.defaultVisible
+  )
+    .sort(getSorter(columnsState))
 
-      .filter((item) => item.visible)
-      .filter((item) => item.fixed === "left")
-      .map((item) => ({
-        ...item,
-        id: item.id ?? findColKey(item),
-        name: item.title,
-      }))
-  }, [columns, columnsState, meta.defaultVisible])
+    .filter((item) => item.visible)
+    .filter((item) => item.fixed === "left")
+    .map((item) => ({
+      ...item,
+      id: item.id ?? findColKey(item),
+      name: item.title,
+    }))
 
-  const centerColumns = useMemo(() => {
-    return mapStateToColumns(columns, columnsState, !!meta.defaultVisible)
-      .sort(getSorter(columnsState))
+  const centerColumns = mapStateToColumns(
+    columns,
+    columnsState,
+    !!meta.defaultVisible
+  )
+    .sort(getSorter(columnsState))
 
-      .filter((item) => item.visible)
-      .filter((item) => item.fixed !== "left")
-      .map((item) => ({
-        ...item,
-        id: item.id ?? findColKey(item),
-        name: item.title,
-      }))
-  }, [columns, columnsState, meta.defaultVisible])
+    .filter((item) => item.visible)
+    .filter((item) => item.fixed !== "left")
+    .map((item) => ({
+      ...item,
+      id: item.id ?? findColKey(item),
+      name: item.title,
+    }))
 
   const onOk = () => {
     meta?.settingModalProps?.onOk?.(columnsState) // 由onOk 来修改
     // context.setColumnsState(columnsState)
     onOpenChange(false)
-  }
-
-  const dragProps = {
-    onDragEnd(fromIndex: number, toIndex: number) {
-      const moved = arrayMoveImmutable<ColumnWithState>(
-        leftColumns,
-        fromIndex,
-        toIndex
-      )
-
-      const newColumnsState = produce(columnsState, (draft) => {
-        moved.forEach((col, idx) => {
-          const colKey = findColKey(col)
-          draft[colKey] = {
-            ...draft[colKey],
-            order: idx,
-          }
-        })
-      })
-
-      setColumnsState(newColumnsState)
-    },
-    nodeSelector: ".li",
-    handleSelector: ".handle",
-  }
-
-  const dragProps2 = {
-    onDragEnd(fromIndex: number, toIndex: number) {
-      const moved = arrayMoveImmutable<ColumnWithState>(
-        centerColumns,
-        fromIndex,
-        toIndex
-      )
-
-      const newColumnsState = produce(columnsState, (draft) => {
-        moved.forEach((col, idx) => {
-          const colKey = findColKey(col)
-          draft[colKey] = {
-            ...draft[colKey],
-            order: idx,
-          }
-        })
-      })
-
-      setColumnsState(newColumnsState)
-    },
-    nodeSelector: ".li",
-    handleSelector: ".handle",
-    // scrollSpeed: 200,
-    enableScroll: false,
   }
 
   return (
@@ -159,7 +111,8 @@ const SettingModal2: FC<SettingModal2Props> = ({
                 children: (
                   <div
                     style={{
-                      overflowY: "scroll",
+                      // overflowY: "scroll",
+                      overflow: "auto",
                       maxHeight: 400,
                     }}
                   >
@@ -243,42 +196,30 @@ const SettingModal2: FC<SettingModal2Props> = ({
             维度
           </Divider>
 
-          <ReactDragListView {...dragProps}>
-            {leftColumns.map((column, index) => (
-              <SortItem
-                title={column.title}
-                key={index}
-                onDelete={() => {
-                  setColumnsState(
-                    produce(columnsState, (draft) => {
-                      const colKey = findColKey(column)
-                      draft[colKey] = {
-                        ...draft[colKey],
-                        visible: false,
-                      }
-                    })
-                  )
-                }}
-              />
-            ))}
-          </ReactDragListView>
-
-          <Divider plain dashed style={{color: "#999999", fontSize: 12}}>
-            指标
-          </Divider>
-          <div
-            style={{maxHeight: 350, overflowY: "auto"}}
-            className="scroll-shadow"
-          >
-            <ReactDragListView {...dragProps2}>
-              {centerColumns.map((column, index) => (
-                <SortItem
-                  title={column.title}
-                  key={index}
-                  onDelete={() => {
+          <SortableList
+            items={leftColumns}
+            onChange={(moved) => {
+              const newColumnsState = produce(columnsState, (draft) => {
+                moved.forEach((col, idx) => {
+                  const colKey = findColKey(col)
+                  draft[colKey] = {
+                    ...draft[colKey],
+                    order: idx,
+                  }
+                })
+              })
+              setColumnsState(newColumnsState)
+            }}
+            renderItem={(item) => (
+              <SortableList.Item id={item.id}>
+                <SortableList.DragHandle style={{flex: 1, cursor: "pointer"}}>
+                  {item.title as string}
+                </SortableList.DragHandle>
+                <CloseOutlined
+                  onClick={() => {
                     setColumnsState(
                       produce(columnsState, (draft) => {
-                        const colKey = findColKey(column)
+                        const colKey = findColKey(item)
                         draft[colKey] = {
                           ...draft[colKey],
                           visible: false,
@@ -287,8 +228,52 @@ const SettingModal2: FC<SettingModal2Props> = ({
                     )
                   }}
                 />
-              ))}
-            </ReactDragListView>
+              </SortableList.Item>
+            )}
+          />
+
+          <Divider plain dashed style={{color: "#999999", fontSize: 12}}>
+            指标
+          </Divider>
+          <div
+            style={{maxHeight: 350, overflowY: "auto"}}
+            className="scroll-shadow"
+          >
+            <SortableList
+              items={centerColumns}
+              onChange={(moved) => {
+                const newColumnsState = produce(columnsState, (draft) => {
+                  moved.forEach((col, idx) => {
+                    const colKey = findColKey(col)
+                    draft[colKey] = {
+                      ...draft[colKey],
+                      order: idx,
+                    }
+                  })
+                })
+                setColumnsState(newColumnsState)
+              }}
+              renderItem={(item) => (
+                <SortableList.Item id={item.id}>
+                  <SortableList.DragHandle style={{flex: 1, cursor: "pointer"}}>
+                    {item.title as string}
+                  </SortableList.DragHandle>
+                  <CloseOutlined
+                    onClick={() => {
+                      setColumnsState(
+                        produce(columnsState, (draft) => {
+                          const colKey = findColKey(item)
+                          draft[colKey] = {
+                            ...draft[colKey],
+                            visible: false,
+                          }
+                        })
+                      )
+                    }}
+                  />
+                </SortableList.Item>
+              )}
+            />
           </div>
         </Col>
       </Row>
@@ -296,26 +281,4 @@ const SettingModal2: FC<SettingModal2Props> = ({
   )
 }
 
-const SortItem = ({title, onDelete}) => {
-  return (
-    <div
-      className="li"
-      style={{
-        display: "flex",
-        alignItems: "center",
-        padding: "4px 8px",
-        border: "1px solid rgba(5, 5, 5, 0.06)",
-        borderRadius: 4,
-        margin: "4px 0",
-      }}
-    >
-      <MenuOutlined
-        className="handle"
-        style={{cursor: "move", marginRight: 8}}
-      />
-      <span style={{flex: 1}}> {title}</span>
-      <CloseOutlined onClick={onDelete} />
-    </div>
-  )
-}
 export default memo(SettingModal2)
