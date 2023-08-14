@@ -1,5 +1,13 @@
 # @soul/core
 
+## 0.0.17
+
+### Patch Changes
+
+- sasa
+- Updated dependencies
+  - @soul/utils@0.0.17
+
 ## 0.0.16
 
 ### Patch Changes

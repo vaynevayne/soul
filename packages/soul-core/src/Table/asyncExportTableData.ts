@@ -28,6 +28,10 @@ export const getValueByDataIndex = (data, columns) => {
       if (col.render) {
         value = col.render?.(value, row)
       }
+      // 后期使用该字段,避免耦合,支持使用 render
+      if (col.excelRender) {
+        value = col.excelRender?.(value, row)
+      }
 
       newRow[col.dataIndex] = value
     })
