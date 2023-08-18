@@ -15,8 +15,9 @@ const CheckAllSection: FC<any> = ({
   const [indeterminate, setIndeterminate] = useState(true)
   const [checkAll, setCheckAll] = useState(false)
 
-  const isAllChecked = chunkColumns.every((col) => col.visible)
-  const isAllUnChecked = chunkColumns.every((col) => !col.visible)
+  const isAllChecked =
+    chunkColumns?.length > 0 && chunkColumns.every((col) => col.visible)
+  const isAllUnChecked = chunkColumns.every((col) => !col.visible) // length =0 时,总是返回 true
 
   useEffect(() => {
     setCheckAll(isAllChecked)
