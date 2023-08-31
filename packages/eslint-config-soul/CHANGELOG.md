@@ -1,5 +1,11 @@
 # eslint-config-soul
 
+## 0.0.18
+
+### Patch Changes
+
+- sass
+
 ## 0.0.17
 
 ### Patch Changes

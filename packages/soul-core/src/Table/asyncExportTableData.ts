@@ -25,15 +25,12 @@ export const getValueByDataIndex = (data, columns) => {
     const newRow = {}
     columns.forEach((col) => {
       let value = get(row, col.dataIndex)
-      if (col.render) {
-        value = col.render?.(value, row)
-      }
-      // 后期使用该字段,避免耦合,支持使用 render
-      if (col.excelRender) {
-        value = col.excelRender?.(value, row)
-      }
 
-      newRow[col.dataIndex] = value
+      newRow[col.dataIndex] = col.excelRender
+        ? col.excelRender?.(value, row)
+        : col.render
+        ? col.render?.(value, row)
+        : value
     })
     resTable.push(newRow)
   })
