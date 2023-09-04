@@ -35,13 +35,7 @@ import ExcelModal from "./ExcelModal"
 import {ResizeableTitle} from "./ResizeableTitle"
 import SettingModal from "./SettingModal"
 import {ColumnsStateContext} from "./context"
-import {
-  ColumnState,
-  ColumnWithState,
-  ColumnsState,
-  Meta,
-  SoulTableColumn,
-} from "./type"
+import {ColumnState, ColumnWithState, ColumnsState, Meta} from "./type"
 import {findColKey, getSorter, getState, getVisible} from "./util"
 
 interface Handle {
@@ -52,19 +46,14 @@ export type TableProps = {
   /**
    * @description 可以在 column 中传入相关 columnState, 将作为默认值使用
    */
-  columns: (SoulTableColumn & {
-    /** setting  中的 tab 分类,用作 label */
-    tab: string
-    /** tab  下的 collapse  分组,用作 label */
-    collapse: string[]
-  })[]
+  columns: any[]
 
   defaultColumnsState?: ColumnsState
 
   columnsState?: ColumnsState
 
   onColumnsStateChange?: (columnsState: ColumnsState) => void
-  rewriteColumns?: (columns: TableColumnsType) => TableColumnsType
+  rewriteColumns?: (columns: TableColumnsType<any>) => TableColumnsType<any>
   meta?: Meta
 } & AntTableProps<any>
 
