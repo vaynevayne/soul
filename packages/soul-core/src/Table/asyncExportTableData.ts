@@ -155,7 +155,9 @@ function exportExcel(Excel, tableColumns, tableData, lines, fileName) {
           // horizontal: column.oldType === "string" ? "left" : "right",
         },
         numFmt:
-          formatMap[columnMftMap.get(column.dataIndex.toString())] || "General",
+          column.numFmt ||
+          formatMap[columnMftMap.get(column.dataIndex.toString())] ||
+          "General",
       },
     }
   })
