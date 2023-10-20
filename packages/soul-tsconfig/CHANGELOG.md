@@ -1,5 +1,11 @@
 # @soul/tsconfig
 
+## 0.0.21
+
+### Patch Changes
+
+- sada
+
 ## 0.0.20
 
 ### Patch Changes

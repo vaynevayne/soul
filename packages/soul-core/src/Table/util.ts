@@ -1,6 +1,6 @@
-import {TableColumnType} from "antd"
 import {ColumnsState, ColumnWithState} from "./type"
 
+import {TableColumnType} from "antd"
 /**
  * @desc (key || dataIndex).toString()
  * @param column

@@ -1,4 +1,5 @@
 import {
+  CopyOutlined,
   DownOutlined,
   DownloadOutlined,
   RightOutlined,
@@ -13,7 +14,6 @@ import {
   Space,
   Table,
   TableColumnType,
-  TableColumnsType,
   Tooltip,
 } from "antd"
 import {arrayMoveImmutable} from "array-move"
@@ -22,6 +22,7 @@ import {
   forwardRef,
   memo,
   useCallback,
+  useId,
   useImperativeHandle,
   useMemo,
   useState,
@@ -37,27 +38,30 @@ import SettingModal from "./SettingModal"
 import {ColumnsStateContext} from "./context"
 import {ColumnState, ColumnWithState, ColumnsState, Meta} from "./type"
 import {findColKey, getSorter, getState, getVisible} from "./util"
+import ClipboardJS from "clipboard"
 
 interface Handle {
-  getTableColumns(): TableColumnsType
+  getTableColumns(): TableColumnType<object>[]
 }
 
 export type TableProps = {
   /**
    * @description 可以在 column 中传入相关 columnState, 将作为默认值使用
    */
-  columns: any[]
+  columns: TableColumnType<any>[]
 
   defaultColumnsState?: ColumnsState
 
   columnsState?: ColumnsState
 
   onColumnsStateChange?: (columnsState: ColumnsState) => void
-  rewriteColumns?: (columns: TableColumnsType<any>) => TableColumnsType<any>
+  rewriteColumns?: (columns: TableColumnType<any>[]) => TableColumnType<any>[]
   meta?: Meta
 } & AntTableProps<any>
 
 const MENU_ID = "menu-id"
+
+new ClipboardJS(".js-copy-btn")
 
 const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
   {
@@ -74,6 +78,9 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
   },
   ref
 ) => {
+  const uuid = useId()
+  const tableId = uuid.replace(/:/g, "")
+
   // 函数参数默认值对 null 无效,所以在这里写引用类型默认值
   const columns = useMemo(() => propColumns || [], [propColumns])
   const meta = useMemo(
@@ -235,7 +242,10 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
           <Col flex={1}>{title?.(dataSource)}</Col>
           <Col flex="none">
             {meta.toolbar === false ? null : (
-              <Space style={{marginBottom: 8, marginLeft: "auto"}}>
+              <Space
+                style={{marginBottom: 8, marginLeft: "auto"}}
+                size={"small"}
+              >
                 {meta.toolbar}
                 {meta.disableSetting ? null : (
                   <Tooltip title="列配置">
@@ -258,7 +268,15 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
                     ></Button>
                   </Tooltip>
                 )}
-
+                <Tooltip title="复制">
+                  <Button
+                    type="text"
+                    className="js-copy-btn"
+                    data-clipboard-target={`#${tableId}`}
+                    size="small"
+                    icon={<CopyOutlined />}
+                  />
+                </Tooltip>
                 {meta.disableCollapse ? null : (
                   <Tooltip title={isOpenedCollapse ? "收起" : "展开"}>
                     <Button
@@ -280,6 +298,7 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
           <ReactDragListView.DragColumn {...dragProps}>
             <ReactDragListView {...dragRowProps}>
               <Table
+                id={tableId}
                 columns={rewriteColumns?.(tableColumns) || tableColumns}
                 {...(meta.contextMenus && meta.contextMenus.length > 0
                   ? {
