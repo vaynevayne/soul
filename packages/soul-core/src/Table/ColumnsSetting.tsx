@@ -1,7 +1,7 @@
 import {SettingOutlined} from "@ant-design/icons"
-import {Button, Tooltip} from "antd"
-import {FC, memo, useState} from "react"
-import SettingModal2 from "./SettingModal2"
+import {Button, Spin, Tooltip} from "antd"
+import {FC, Suspense, lazy, memo, useState} from "react"
+const SettingModal2 = lazy(() => import("./SettingModal2"))
 
 export type SettingButtonProps = {
   radioGroup?: string[]
@@ -23,11 +23,13 @@ const ColumnsSetting: FC<SettingButtonProps> = ({radioGroup}) => {
 
       {/* 还未 open, 内部的 useEffect 就会执行,所以手动控制 */}
       {open ? (
-        <SettingModal2
-          open={open}
-          radioGroup={radioGroup}
-          onOpenChange={(nextOpen) => setOpen(nextOpen)}
-        ></SettingModal2>
+        <Suspense fallback={<Spin></Spin>}>
+          <SettingModal2
+            open={open}
+            radioGroup={radioGroup}
+            onOpenChange={(nextOpen) => setOpen(nextOpen)}
+          ></SettingModal2>
+        </Suspense>
       ) : null}
     </>
   )

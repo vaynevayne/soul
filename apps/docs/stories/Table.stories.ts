@@ -1,6 +1,5 @@
 import {SoulTable} from "@soul/core"
 import type {Meta, StoryObj} from "@storybook/react"
-import "react-contexify/dist/ReactContexify.css"
 import "react-resizable/css/styles.css"
 import {columns, dataSource} from "./mockData"
 

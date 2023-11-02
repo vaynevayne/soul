@@ -1,5 +1,11 @@
 # @soul/utils
 
+## 0.0.23
+
+### Patch Changes
+
+- sadad
+
 ## 0.0.22
 
 ### Patch Changes

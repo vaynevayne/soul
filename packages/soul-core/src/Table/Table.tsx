@@ -10,8 +10,10 @@ import {
   TableProps as AntTableProps,
   Button,
   Col,
+  Dropdown,
   Row,
   Space,
+  Spin,
   Table,
   TableColumnType,
   Tooltip,
@@ -19,26 +21,31 @@ import {
 import {arrayMoveImmutable} from "array-move"
 import {produce} from "immer"
 import {
+  Suspense,
   forwardRef,
+  lazy,
   memo,
   useCallback,
   useId,
   useImperativeHandle,
   useMemo,
+  useRef,
   useState,
 } from "react"
 import {Collapse} from "react-collapse"
-import {Item, Menu, useContextMenu} from "react-contexify"
-import "react-contexify/dist/ReactContexify.css"
+
 import ReactDragListView from "react-drag-listview"
 import "react-resizable/css/styles.css"
-import ExcelModal from "./ExcelModal"
+
+const ExcelModal = lazy(() => import("./ExcelModal"))
 import {ResizeableTitle} from "./ResizeableTitle"
-import SettingModal from "./SettingModal"
+const SettingModal = lazy(() => import("./SettingModal"))
+
 import {ColumnsStateContext} from "./context"
 import {ColumnState, ColumnWithState, ColumnsState, Meta} from "./type"
 import {findColKey, getSorter, getState, getVisible} from "./util"
 import ClipboardJS from "clipboard"
+import {isEmpty} from "lodash-es"
 
 interface Handle {
   getTableColumns(): TableColumnType<object>[]
@@ -58,8 +65,6 @@ export type TableProps = {
   rewriteColumns?: (columns: TableColumnType<any>[]) => TableColumnType<any>[]
   meta?: Meta
 } & AntTableProps<any>
-
-const MENU_ID = "menu-id"
 
 new ClipboardJS(".js-copy-btn")
 
@@ -112,10 +117,8 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
   const [isOpenedExcel, setIsOpenedExcel] = useState(false)
   const [isOpenedCollapse, setIsOpenedCollapse] = useState(true)
 
-  // 🔥 you can use this hook from everywhere. All you need is the menu id
-  const {show} = useContextMenu({
-    id: MENU_ID,
-  })
+  /** 当前点击的行数据 */
+  const contextMenuRow = useRef<Record<string, string | number>>({})
 
   type Key = keyof ColumnState
 
@@ -300,24 +303,39 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
               <Table
                 id={tableId}
                 columns={rewriteColumns?.(tableColumns) || tableColumns}
-                {...(meta.contextMenus && meta.contextMenus.length > 0
-                  ? {
-                      onRow: (record) => {
-                        return {
-                          onContextMenu: (event) => {
-                            show({
-                              event,
-                              props: record,
-                            })
-                          },
-                        }
-                      },
-                    }
-                  : null)}
+                onRow={(record) => {
+                  return {
+                    onContextMenu: () => {
+                      contextMenuRow.current = record
+                    },
+                  }
+                }}
                 components={{
                   header: {
                     cell: ResizeableTitle,
                   },
+
+                  ...(!isEmpty(dataSource) &&
+                    !isEmpty(meta?.items) && {
+                      body: {
+                        row: (_props) => (
+                          <Dropdown
+                            menu={{
+                              items: meta.items,
+                              onClick: (menuInfo) => {
+                                meta?.onItemClick?.({
+                                  row: contextMenuRow.current,
+                                  menuInfo,
+                                })
+                              },
+                            }}
+                            trigger={["contextMenu"]}
+                          >
+                            <tr {..._props} />
+                          </Dropdown>
+                        ),
+                      },
+                    }),
                 }}
                 dataSource={dataSource}
                 {...tableProps}
@@ -331,41 +349,30 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
           // 列设置
           // 不能去除, 为了每次打开modal, useState重新执行
           isOpenedSetting && (
-            <SettingModal
-              columns={columns}
-              open={isOpenedSetting}
-              setIsOpenedSetting={setIsOpenedSetting}
-              meta={meta}
-            ></SettingModal>
+            <Suspense fallback={<Spin size="small"></Spin>}>
+              <SettingModal
+                columns={columns}
+                open={isOpenedSetting}
+                setIsOpenedSetting={setIsOpenedSetting}
+                meta={meta}
+              ></SettingModal>
+            </Suspense>
           )
         }
         {
           // 导出 excel
           isOpenedExcel && (
-            <ExcelModal
-              columns={rewriteColumns?.(tableColumns) || tableColumns}
-              dataSource={dataSource}
-              open={isOpenedExcel}
-              setIsOpenedExcel={setIsOpenedExcel}
-              meta={meta}
-            ></ExcelModal>
+            <Suspense fallback={<Spin size="small"></Spin>}>
+              <ExcelModal
+                columns={rewriteColumns?.(tableColumns) || tableColumns}
+                dataSource={dataSource}
+                open={isOpenedExcel}
+                setIsOpenedExcel={setIsOpenedExcel}
+                meta={meta}
+              ></ExcelModal>
+            </Suspense>
           )
         }
-
-        {/* 右键菜单 */}
-        {meta.contextMenus?.length ? (
-          <Menu id={MENU_ID}>
-            {meta.contextMenus.map((item, index) => (
-              <Item
-                key={item.key || index}
-                onClick={meta.onContextMenuItemClick}
-                {...item}
-              >
-                {item.children}
-              </Item>
-            ))}
-          </Menu>
-        ) : null}
       </ColumnsStateContext.Provider>
     </>
   )

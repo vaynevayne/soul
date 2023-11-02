@@ -1,5 +1,5 @@
 export {default as ColumnsSetting} from "./ColumnsSetting"
 export {default as SoulTable} from "./Table"
 export {asyncExportTableData} from "./asyncExportTableData"
-export type {ColumnState, SoulTableColumn} from "./type"
+export type {ColumnState, SoulTableColumn, ColumnsState, Meta} from "./type"
 export {findColKey} from "./util"

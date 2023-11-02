@@ -1,6 +1,6 @@
-import {ModalProps, TableColumnType} from "antd"
-import {Dispatch, Key, ReactNode, SetStateAction} from "react"
-import {ItemParams} from "react-contexify"
+import {MenuProps, ModalProps, TableColumnType} from "antd"
+import {MenuInfo} from "rc-menu/lib/interface"
+import {Dispatch, ReactNode, SetStateAction} from "react"
 
 /**
  *  order ,visible,disabled 是扩展的, 其他字段同 column
@@ -44,24 +44,14 @@ export type Meta = {
 
   collapseOrder?: Record<string, string[]>
   /**
-   * 右键菜单, label用做渲染, 其他属性会传到 onContextMenuItemClick 里
+   * 右键菜单
    */
-  contextMenus?: {
-    key?: Key
-    children: ReactNode
-    onClick?: (params: ItemParams<Record<string, any>, any>) => void
-    data?: Record<string, any>
-  }[]
+  items?: MenuProps["items"]
+  onItemClick?: (params: {row: Record<string, any>; menuInfo: MenuInfo}) => void
 
   settingModalProps?: Omit<ModalProps, "onOk"> & {
     onOk: (columnsState: ColumnsState) => Promise<any> | void
   }
-  /**
-   * 右键菜单被点击时
-   */
-  onContextMenuItemClick?: (
-    params: ItemParams<Record<string, any>, any>
-  ) => void
 
   /**
    * 当 checked 被点击时调用,如果传入则需要自己处理 setState,以便支持更复杂的联动
