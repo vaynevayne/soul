@@ -9,12 +9,14 @@ export const ColumnsStateContext = createContext<{
   meta: Meta
   setColumnsState: Dispatch<ColumnsState>
   setColumnState: (colKey: string, key: keyof ColumnState, value: any) => void
+  isControlled: boolean
 }>({
   columnsState: {},
   setColumnsState: () => {},
   setColumnState: () => {},
   meta: {},
   columns: [],
+  isControlled: true,
 })
 
 export const useColumnsStateContext = () => useContext(ColumnsStateContext)

@@ -24,7 +24,8 @@ const SettingModal2: FC<SettingModal2Props> = ({
   onOpenChange,
   radioGroup,
 }) => {
-  const {columns, meta, ...context} = useContext(ColumnsStateContext)
+  const {columns, meta, isControlled, ...context} =
+    useContext(ColumnsStateContext)
 
   const [columnsState, setColumnsState] = useState(context.columnsState)
 
@@ -73,8 +74,10 @@ const SettingModal2: FC<SettingModal2Props> = ({
     }))
 
   const onOk = () => {
-    meta?.settingModalProps?.onOk?.(columnsState) // 由onOk 来修改
-    // context.setColumnsState(columnsState)
+    meta?.settingModalProps?.onOk?.(columnsState) // 由onOk 来修改; BUG 导致非受控模式无法使用
+    if (!isControlled) {
+      context.setColumnsState(columnsState)
+    }
     onOpenChange(false)
   }
 

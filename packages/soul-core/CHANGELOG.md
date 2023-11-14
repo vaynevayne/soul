@@ -1,5 +1,13 @@
 # @soul/core
 
+## 0.0.24
+
+### Patch Changes
+
+- sasasd
+- Updated dependencies
+  - @soul/utils@0.0.24
+
 ## 0.0.23
 
 ### Patch Changes

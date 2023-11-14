@@ -1,5 +1,11 @@
 # @soul/utils
 
+## 0.0.24
+
+### Patch Changes
+
+- sasasd
+
 ## 0.0.23
 
 ### Patch Changes

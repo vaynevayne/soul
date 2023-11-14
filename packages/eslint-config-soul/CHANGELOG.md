@@ -1,5 +1,11 @@
 # eslint-config-soul
 
+## 0.0.23
+
+### Patch Changes
+
+- sasasd
+
 ## 0.0.22
 
 ### Patch Changes

@@ -5,7 +5,7 @@ import {
   RightOutlined,
   SettingOutlined,
 } from "@ant-design/icons"
-import {useUncontrolled, useWatch} from "@soul/utils"
+import {useConst, useUncontrolled, useWatch} from "@soul/utils"
 import {
   TableProps as AntTableProps,
   Button,
@@ -53,7 +53,7 @@ interface Handle {
 
 export type TableProps = {
   /**
-   * @description 可以在 column 中传入相关 columnState, 将作为默认值使用
+   * @description  tableColumns =  columns  + columnsState
    */
   columns: TableColumnType<any>[]
 
@@ -111,6 +111,7 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
     finalValue: {},
     onChange: onColumnsStateChange,
   })
+  const isControlled = useConst<boolean>(propColumnsState !== undefined)
 
   const [isOpenedSetting, setIsOpenedSetting] = useState(false)
   // excel modal
@@ -144,8 +145,9 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
       setColumnState,
       columns,
       meta,
+      isControlled,
     }),
-    [columnsState, setColumnsState, setColumnState, columns, meta]
+    [columnsState, setColumnsState, setColumnState, columns, meta, isControlled]
   )
 
   /** @example { name: 100} */
