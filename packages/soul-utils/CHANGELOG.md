@@ -1,5 +1,11 @@
 # @soul/utils
 
+## 0.0.25
+
+### Patch Changes
+
+- sada
+
 ## 0.0.24
 
 ### Patch Changes

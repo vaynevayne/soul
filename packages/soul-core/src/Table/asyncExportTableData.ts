@@ -223,8 +223,11 @@ async function asyncExportTableData(tableColumns, tableData, fileName) {
   const formatted = excelTableFormatted(
     getValueByDataIndex(tableData, tableColumns)
   )
-
-  exportExcel(Excel, tableColumns, formatted, formatted, fileName)
+  const fixedTitleColumns = tableColumns?.map((item) => ({
+    ...item,
+    title: item.excelTitle || item.title,
+  }))
+  exportExcel(Excel, fixedTitleColumns, formatted, formatted, fileName)
   columnMftMap.clear()
 }
 
