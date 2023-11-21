@@ -217,7 +217,7 @@ async function asyncExportTableData(tableColumns, tableData, fileName) {
   }
   columnMftMap.clear()
 
-  const Excel = await import("exceljs")
+  const {default: Excel} = await import("exceljs")
 
   // day1,value : 0.1005
   const formatted = excelTableFormatted(

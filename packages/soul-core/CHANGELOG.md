@@ -1,5 +1,13 @@
 # @soul/core
 
+## 0.0.26
+
+### Patch Changes
+
+- ddd
+- Updated dependencies
+  - @soul/utils@0.0.26
+
 ## 0.0.25
 
 ### Patch Changes
