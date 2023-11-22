@@ -95,10 +95,14 @@ const CheckAllSection: FC<any> = ({
                     draft[colKey] = {
                       ...draft[colKey],
                       visible: checked,
-                      fixed: col.tab === "维度" ? "left" : false,
+                      fixed: ['"维度"', "其他"].includes(col.tab)
+                        ? "left"
+                        : false,
                       ...(checked && {
                         order:
-                          col.tab === "维度"
+                          col.tab === "其他"
+                            ? -1
+                            : col.tab === "维度"
                             ? maxLeftOrder + 1
                             : maxCenterOrder + 1,
                       }),

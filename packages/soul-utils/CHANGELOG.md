@@ -1,5 +1,11 @@
 # @soul/utils
 
+## 0.0.27
+
+### Patch Changes
+
+- ddddd
+
 ## 0.0.26
 
 ### Patch Changes
