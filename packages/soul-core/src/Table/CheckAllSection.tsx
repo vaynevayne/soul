@@ -95,7 +95,7 @@ const CheckAllSection: FC<any> = ({
                     draft[colKey] = {
                       ...draft[colKey],
                       visible: checked,
-                      fixed: ['"维度"', "其他"].includes(col.tab)
+                      fixed: ["维度", "其他"].includes(col.tab)
                         ? "left"
                         : false,
                       ...(checked && {
