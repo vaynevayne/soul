@@ -192,10 +192,14 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
 
   const dragProps = {
     onDragEnd(fromIndex: number, toIndex: number) {
+      const leftLength = tableColumns.filter(
+        (item) => item.fixed === "left"
+      ).length
+
       const moved = arrayMoveImmutable<ColumnWithState>(
         tableColumns,
-        fromIndex,
-        toIndex
+        fromIndex + leftLength,
+        toIndex + leftLength
       )
 
       const newColumnsState = produce(columnsState, (draft) => {
@@ -211,7 +215,7 @@ const SoulTable: React.ForwardRefRenderFunction<Handle, TableProps> = (
       setColumnsState(newColumnsState)
     },
     nodeSelector: "th:not(.ant-table-cell-fix-left)",
-    // ignoreSelector: ".ant-table-cell-fix-left",
+    ignoreSelector: ".ant-table-cell-fix-left",
   }
 
   const dragRowProps = {
