@@ -1,6 +1,6 @@
 {
   "name": "@soul/core",
-  "version": "0.0.29",
+  "version": "0.0.30",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -29,7 +29,7 @@
     "array-move": "^4.0.0",
     "eslint": "^8.15.0",
     "eslint-config-soul": "workspace:*",
-    "exceljs": "^4.3.0",
+    "exceljs": "^4.4.0",
     "immer": "^10.0.2",
     "lodash-es": "^4.17.21",
     "numeral": "^2.0.6",

@@ -1,5 +1,11 @@
 # @soul/tsconfig
 
+## 0.0.29
+
+### Patch Changes
+
+- adad
+
 ## 0.0.28
 
 ### Patch Changes
